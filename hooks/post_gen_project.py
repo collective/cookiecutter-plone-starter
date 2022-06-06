@@ -47,7 +47,7 @@ def prepare_frontend(volto_version: str, description: str):
         ],
         [
             f"Generate frontend application with @plone/volto {volto_version}",
-            f"yo @plone/volto frontend --description '{description}' {addons}"
+            f"yo @plone/volto frontend --description '{description}' {addons} "
             f"--skip-install --no-interactive --volto={volto_version}",
             True,
             "frontend",
@@ -67,7 +67,7 @@ def prepare_backend():
     """Apply black and isort to the generated codebase."""
     print_info("Prepare backend codebase")
     steps = [
-        ["Format generate code in the backend", ["make", "format"], False, "backend"]
+        ["Format generated code in the backend", ["make", "format"], False, "backend"]
     ]
     for step in steps:
         msg, command, shell, cwd = step
