@@ -1,0 +1,6 @@
+black
+cookiecutter
+isort
+pytest
+pytest-cookies
+wheel

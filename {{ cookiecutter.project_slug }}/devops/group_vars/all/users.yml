@@ -1,0 +1,14 @@
+---
+users:
+
+  'plone':
+    name: 'Plone installation'
+    email: '{{ cookiecutter.email }}'
+    public_keys:
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDJIwjHxRAM1a8zc1kuTJ0GyzvloaBTz/fO7bGoNOlxY2lnUDop+q3CbHF28IkmVQCk28I+MXCnUXG6ARZgnBcb4LDey9WPVsiy3NRCXOmaZK6NKmKUejdA5Y4ZTHbs6rdIInDLWaFxzoxg5p/LaXUaTrKra2SpGc3kv7xKiZKXyTznFjFSv/u6Wm/vvZopWM6m4k8Z00fTUtxQO0eWKArStF99YFszUDU2w2jhL7n8irLow0UqjNjp0MvkPiic2SueoylQRIlD57XzveMBpGynYdsZWKDa3Czzo5ykHPLYrOByioKKjnpwgruXnXkkN4ov8sK+LqqAXaicxed6ohbOh68IWVB8nssb+RbISmzzpIXUwd1qkAyeiSjt5b9MFcIT56zeRb5B+aWZbYffc+pKy8kAjrYHCWEFl6O3N+M/bI9jgtXcZ9L6FSBN5vWjgRQPn7UwiMXIUssm0lU5AgCxs7q7S0xACj0xVFk5NeUM9vcCzXkY9vAjJmE1hzBWeOVhhQqLKmkbi/scr5hW2rrNwnuPBpyHUu2wTIyGHbnZ9CCwU3u21XDyvvO9ufxDjIH3v2EwEPqpbejKRM8QUH6YuH2goy89yQQijsC0YUE8AlJpbs9ctxSyzsJ6Z3ZwHJA681Ei15omhab2iwmT4KcS+3mC5pSCsFQgA4OsJKy5OQ== ericof@gmail.com'
+    password: '$6$8TrTq/2twy7u./bS$5gxT7m93.aVJD1P9V0y.EMcCvgH2RV8pM4vVyGFpqx3zEPUvmib7nQtJD6vxJRTMyR9oPRi323tbwpx0wLyWs.'
+    state: present
+    shell: '/bin/bash'
+    groups:
+      - 'docker'
+      - 'plone'

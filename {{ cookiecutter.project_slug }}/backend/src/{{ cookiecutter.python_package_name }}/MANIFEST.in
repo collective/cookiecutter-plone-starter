@@ -1,0 +1,6 @@
+graft src/{{ cookiecutter.python_package_name }}
+graft docs
+include *.rst
+include *.md
+include *.cfg
+global-exclude *.pyc

@@ -1,0 +1,4 @@
+---
+motd_info:
+  - " FQDN:    ": {{ "{{ ansible_fqdn }}" }}
+  - " RAM:     ": {{ "{{ (ansible_memtotal_mb / 1000) | round(1) }}GB" }}

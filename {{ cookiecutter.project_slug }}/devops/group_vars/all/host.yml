@@ -1,0 +1,3 @@
+---
+hostname: '{{ cookiecutter.project_slug }}'
+fqdn: {{"'{{ hostname }}.plone.org'"}}

@@ -1,0 +1,44 @@
+name: Plone Starter CI
+on: [push]
+
+jobs:
+
+  generation:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+
+    steps:
+      # git checkout
+      - uses: actions/checkout@v3
+
+      # python setup
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # python cache
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # python install
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Test
+      - name: Run tests
+        run: |
+          ./bin/python -m pytest tests

@@ -1,0 +1,2 @@
+-r unreleased.txt
+-e "src/{{ cookiecutter.python_package_name }}[test]"

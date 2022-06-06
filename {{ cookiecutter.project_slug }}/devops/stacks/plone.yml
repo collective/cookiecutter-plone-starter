@@ -1,0 +1,143 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik:v2.6
+
+    ports:
+      - 80:80
+      - 443:443
+
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.middlewares.admin-auth.basicauth.users=${TRAEFIK_AUTH_USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
+        - traefik.http.routers.traefik-public-https.rule=Host(`${TRAEFIK_FQDN?Variable TRAEFIK_FQDN not set}`)
+        - traefik.http.routers.traefik-public-https.entrypoints=https
+        - traefik.http.routers.traefik-public-https.tls=true
+        - traefik.http.routers.traefik-public-https.service=api@internal
+        - traefik.http.routers.traefik-public-https.middlewares=admin-auth
+        - traefik.http.services.traefik-public.loadbalancer.server.port=8000
+
+        # GENERIC MIDDLEWARES
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+        - traefik.http.middlewares.gzip.compress=true
+        - traefik.http.middlewares.gzip.compress.excludedcontenttypes=image/png, image/jpeg, font/woff2
+
+        # GENERIC ROUTERS
+        - traefik.http.routers.generic-https-redirect.entrypoints=http
+        - traefik.http.routers.generic-https-redirect.rule=HostRegexp(`{host:.*}`)
+        - traefik.http.routers.generic-https-redirect.priority=1
+        - traefik.http.routers.generic-https-redirect.middlewares=https-redirect
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-public-certificates:/certificates
+      - traefik-config:/config
+
+    command:
+      - --providers.docker
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.swarmmode
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.le.acme.email=${TRAEFIK_EMAIL?Variable TRAEFIK_EMAIL not set}
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --providers.file.filename=/config/traefik_config.yaml
+      - --accesslog
+      - --log
+      - --api
+
+    networks:
+      - traefik-public
+
+  frontend:
+    image: {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
+    environment:
+      RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
+    depends_on:
+      - backend
+    networks:
+    - traefik-public
+    - backend
+    deploy:
+      replicas: 2
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        # SERVICE
+        - traefik.http.services.plone-frontend.loadbalancer.server.port=3000
+        # HOSTS
+        - traefik.http.routers.frontend.rule=Host(`${FQDN?Unset}`)
+        - traefik.http.routers.frontend.entrypoints=https
+        - traefik.http.routers.frontend.tls=true
+        - traefik.http.routers.frontend.tls.certresolver=le
+        - traefik.http.routers.frontend.service=plone-frontend
+        - traefik.http.routers.frontend.middlewares=gzip
+
+  backend:
+    image: {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:latest
+    environment:
+      SITE: Plone
+      RELSTORAGE_DSN: "dbname='plone' user='plone' host='db' password='plone'"
+    depends_on:
+      - db
+    networks:
+    - traefik-public
+    - backend
+    deploy:
+      replicas: 2
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        # SERVICE
+        - traefik.http.services.plone-backend.loadbalancer.server.port=8080
+        # Plone API
+        - traefik.http.routers.backend.rule=Host(`${FQDN?Unset}`) && (PathPrefix(`/++api++`))
+        - traefik.http.routers.backend.entrypoints=https
+        - traefik.http.routers.backend.tls=true
+        - traefik.http.routers.backend.service=plone-backend
+        - traefik.http.middlewares.backend.addprefix.prefix=/VirtualHostBase/https/${FQDN?Unset}/Plone/++api++/VirtualHostRoot
+        - traefik.http.routers.backend.middlewares=gzip, backend
+
+  db:
+    image: postgres:14.2
+    environment:
+      POSTGRES_USER: plone
+      POSTGRES_PASSWORD: plone
+      POSTGRES_DB: plone
+    volumes:
+    - site-data:/var/lib/postgresql/data
+    networks:
+    - backend
+
+volumes:
+  traefik-public-certificates:
+    driver_opts:
+      type: none
+      device: /data/traefik/certificates
+      o: bind
+  traefik-config:
+    driver_opts:
+      type: none
+      device: /data/traefik/config
+      o: bind
+  site-data:
+    driver_opts:
+      type: none
+      device: /srv/{{ cookiecutter.github_organization }}/data
+      o: bind
+
+networks:
+  traefik-public:
+    external: true
+    driver: overlay
+  backend:
+    driver: overlay

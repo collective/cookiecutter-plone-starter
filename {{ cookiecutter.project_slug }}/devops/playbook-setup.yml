@@ -1,0 +1,60 @@
+- hosts: "all"
+  gather_facts: True
+  become: yes
+
+  roles:
+  - role: tangrama.common
+  - role: geerlingguy.swap
+  - role: tangrama.motd
+  - role: tangrama.ufw
+  - role: tangrama.users
+
+  tasks:
+
+  - name: Install Docker Python Packages
+    ansible.builtin.pip:
+      name:
+        - docker
+      state: present
+
+  - name: Prepare project structure
+    block:
+    - name: Create main directory
+      ansible.builtin.file:
+        dest: /srv/{{ cookiecutter.project_slug }}/
+        state: directory
+        owner: plone
+        group: plone
+        mode: 0750
+
+    - name: Create data directory
+      ansible.builtin.file:
+        dest: /srv/{{ cookiecutter.project_slug }}/data
+        state: directory
+        owner: 999
+        group: 999
+        mode: 0750
+
+  - name: Create Swarm structure
+    block:
+    - name: Init a new swarm with default parameters
+      community.docker.docker_swarm:
+        state: present
+
+    - name: Create a network
+      community.docker.docker_network:
+        name: traefik-public
+        driver: overlay
+
+    - name: Create Traefik folders
+      ansible.builtin.file:
+        dest: {{'"{{ item }}"'}}
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+      with_items:
+        - /usr/src/traefik/
+        - /data/traefik/
+        - /data/traefik/certificates
+        - /data/traefik/config

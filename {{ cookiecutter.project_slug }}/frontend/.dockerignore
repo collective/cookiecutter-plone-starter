@@ -1,0 +1,7 @@
+build
+cypress
+node_modules
+omelette
+Dockerfile
+Makefile
+*.log

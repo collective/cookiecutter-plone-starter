@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layers>
+  <layer interface="{{ cookiecutter.python_package_name }}.interfaces.I{{ cookiecutter.__python_package_name_upper }}Layer"
+         name="{{ cookiecutter.python_package_name }}"
+  />
+</layers>

@@ -1,0 +1,11 @@
+.docker
+.env_prod
+.vagrant
+.vagrant_private_key
+bin
+include
+inventory/prod.yml
+host_vars/{{ cookiecutter.github_organization }}-prod.yml
+lib
+lib64
+pyvenv.cfg

@@ -1,0 +1,22 @@
+ARG PLONE_VERSION={{ cookiecutter.plone_version }}
+FROM plone/plone-backend:${PLONE_VERSION}
+
+LABEL maintainer="{{ cookiecutter.author }} <{{ cookiecutter.email }}>" \
+      org.label-schema.name="{{ cookiecutter.project_slug }}-acceptance" \
+      org.label-schema.description="{{ cookiecutter.project_title }} backend acceptance image." \
+      org.label-schema.vendor="{{ cookiecutter.author }}"
+
+ENV ZSERVER_HOST=0.0.0.0
+ENV ZSERVER_PORT=55001
+ENV CONFIGURE_PACKAGES="plone.restapi,plone.volto,plone.volto.cors,{{ cookiecutter.python_package_name }}"
+ENV APPLY_PROFILES="dlr.internet:default"
+RUN ./bin/pip install "plone.app.robotframework==2.0.0a6" "plone.app.testing[robot]==7.0.0a3"
+
+# Add local code
+COPY . .
+
+# Install local requirements and fix permissions
+RUN ./bin/pip install -r requirements.txt \
+    && chown -R plone: /app
+
+CMD ["./bin/robot-server",  "plone.app.robotframework.testing.VOLTO_ROBOT_TESTING"]

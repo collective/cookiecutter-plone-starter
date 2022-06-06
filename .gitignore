@@ -1,0 +1,8 @@
+bin/
+include/
+lib/
+lib64/
+pip-selfcheck.json
+.vscode
+projecttitle.projectname/
+.pytest_cache
