@@ -41,4 +41,4 @@ jobs:
       # Test
       - name: Run tests
         run: |
-          ./bin/python -m pytest tests
+          python -m pytest tests
