@@ -47,23 +47,17 @@ cookiecutter gh:collective/cookiecutter-plone-starter
 
 These are all the template options that will be prompted by the [Cookiecutter CLI](https://github.com/cookiecutter/cookiecutter) prior to generating your project.
 
-**project_title**: Your project's human-readable name, capitals and spaces allowed.
-
-**project_slug**: Your project's slug without spaces. Used to name your repository and Docker images.
-
-**description**: Describes your project and gets used in places like ``README.md`` and such.
-
-**author**: This is you! The value goes into places like ``LICENSE``, ``setup.py`` and such.
-
-**email**: The email address you want to identify yourself in the project.
-
-**python_package_name**: Name of the Python package used to configure your project. It needs to be Python-importable, so no dashes, spaces or special characters are allowed.
-
-**plone_version**: Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value.
-
-**volto_version**: Volto (Plone Frontend) version to be used. This queries for the latest available stable Volto version and presents it to you as the default value.
-
-**github_organization**: Used for GitHub and Docker repositories.
+| Option | Description | Example |
+| --- | --- | --- |
+| `project_title` | Your project's human-readable name, capitals and spaces allowed. | **Plone Site** |
+| `project_slug` | Your project's slug without spaces. Used to name your repository and Docker images. | **plone-site** |
+| `description` | Describes your project and gets used in places like ``README.md`` and such. | **New site for our company.** |
+| `author` | This is you! The value goes into places like ``LICENSE``, ``setup.py`` and such. | **Our Company** |
+| `email` | The email address you want to identify yourself in the project. | **email@example.com** |
+| `python_package_name` | Name of the Python package used to configure your project. It needs to be Python-importable, so no dashes, spaces or special characters are allowed. | **plone_site** |
+| `plone_version` | Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value. | **6.0.0a4** |
+| `volto_version` | Volto (Plone Frontend) version to be used. This queries for the latest available stable Volto version and presents it to you as the default value. | **16.0.0-alpha.8** |
+| `github_organization` | Used for GitHub and Docker repositories. | **collective**|
 
 ## License
 
