@@ -132,7 +132,7 @@ volumes:
   site-data:
     driver_opts:
       type: none
-      device: /srv/{{ cookiecutter.github_organization }}/data
+      device: /srv/{{ cookiecutter.project_slug }}/data
       o: bind
 
 networks:
