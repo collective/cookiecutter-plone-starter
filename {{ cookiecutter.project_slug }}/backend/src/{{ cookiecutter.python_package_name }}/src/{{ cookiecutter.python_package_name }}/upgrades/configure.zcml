@@ -3,4 +3,17 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     >
 
+  <!-- Example upgrade step
+  <genericsetup:upgradeSteps
+      profile="ploneorgbr.core:default"
+      source="{{ cookiecutter.__profile_version }}"
+      destination="20230229001"
+      >
+    <genericsetup:upgradeDepends
+        title="Update registry value"
+        import_steps="plone.app.registry"
+        />
+  </genericsetup:upgradeSteps>
+  -->
+
 </configure>

@@ -1,3 +1,10 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+  <!-- Example vocabulary
+  <utility
+      name="{{ cookiecutter.python_package_name }}.vocabulary.industries"
+      component=".industries_vocabulary"
+      />
+   -->
+
 </configure>

@@ -2,7 +2,7 @@
   "blocks": {
     "1006adfe-d9b1-4e70-9b32-a9158310723d": {
       "@type": "slate",
-      "plaintext": " Plone \u00e9 um sistema de gerenciamento de conte\u00fado escrito na linguagem Python e que est\u00e1 atualmente na vers\u00e3o 5.2.8",
+      "plaintext": " Plone is an enterprise CMS built with Python.",
       "value": [
         {
           "children": [
@@ -18,7 +18,7 @@
               "type": "b"
             },
             {
-              "text": " \u00e9 um sistema de gerenciamento de conte\u00fado escrito na linguagem "
+              "text": " is an enterprise CMS built with "
             },
             {
               "children": [
@@ -32,7 +32,7 @@
               "type": "link"
             },
             {
-              "text": "  e que est\u00e1 atualmente na vers\u00e3o 5.2.8"
+              "text": "."
             }
           ],
           "type": "p"

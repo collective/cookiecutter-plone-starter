@@ -35,3 +35,11 @@ class UpgradeStepIntegrationTest(unittest.TestCase):
         if self.src and self.dst:
             steps = self.available_steps()
             self.assertEqual(len(steps), 1)
+
+# Example of upgrade step test
+# class V{{ cookiecutter.__profile_version }}UpgradeTest(UpgradeStepIntegrationTest):
+#     """Test upgrade step from version {{ cookiecutter.__profile_version }}."""
+
+#     src = "{{ cookiecutter.__profile_version }}"
+#     dst = "20230229001"
+#     steps = 1

@@ -14,13 +14,11 @@
       package="plone.behavior"
       file="meta.zcml"
       />
-  <include package="plone.volto" />
-  <include package="plone.restapi" />
+
+  <include file="dependencies.zcml" />
 
   <include file="permissions.zcml" />
   <include file="profiles.zcml" />
-
-  <!-- -*- extra stuff goes here -*- -->
 
   <include package=".indexers" />
   <include package=".vocabularies" />
