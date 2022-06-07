@@ -5,7 +5,7 @@
 
   <!-- Example upgrade step
   <genericsetup:upgradeSteps
-      profile="ploneorgbr.core:default"
+      profile="{{ cookiecutter.python_package_name }}:default"
       source="{{ cookiecutter.__profile_version }}"
       destination="20230229001"
       >

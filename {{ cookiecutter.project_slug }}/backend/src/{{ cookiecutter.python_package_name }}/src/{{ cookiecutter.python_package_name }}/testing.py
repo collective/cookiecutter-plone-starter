@@ -6,7 +6,6 @@ from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 
-import collective.volto.formsupport
 import {{ cookiecutter.python_package_name }}
 
 
@@ -21,7 +20,6 @@ class {{ cookiecutter.__python_package_name_upper }}Layer(PloneSandboxLayer):
         import plone.restapi
 
         self.loadZCML(package=plone.restapi)
-        self.loadZCML(package=collective.volto.formsupport)
         self.loadZCML(package={{ cookiecutter.python_package_name }})
 
     def setUpPloneSite(self, portal):
