@@ -20,3 +20,13 @@ def latest_plone(v) -> str:
     resp = requests.get(url)
     data = resp.content.decode("utf-8")
     return re.search("\nPlone==(.*)\n", data).groups()[0]
+
+
+@simple_filter
+def gs_language_code(code: str) -> str:
+    """Return the language code as expected by Generic Setup."""
+    gs_code = code.lower()
+    if "-" in code:
+        base_language, country = code.split("-")
+        gs_code = f"{base_language}-{country.lower()}"
+    return gs_code

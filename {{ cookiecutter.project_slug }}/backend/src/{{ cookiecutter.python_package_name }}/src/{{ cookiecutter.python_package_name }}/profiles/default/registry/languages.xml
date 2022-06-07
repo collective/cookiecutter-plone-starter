@@ -5,14 +5,14 @@
           name="plone.available_languages"
   >
     <value>
-      <element>en</element>
+      <element>{{ cookiecutter.__profile_language }}</element>
     </value>
   </record>
   <record field="default_language"
           interface="plone.i18n.interfaces.ILanguageSchema"
           name="plone.default_language"
   >
-    <value>en</value>
+    <value>{{ cookiecutter.__profile_language }}</value>
   </record>
 
 </registry>

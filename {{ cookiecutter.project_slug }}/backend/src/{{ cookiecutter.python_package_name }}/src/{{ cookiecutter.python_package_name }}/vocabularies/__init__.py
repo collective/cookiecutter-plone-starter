@@ -1,4 +1,4 @@
-from {{ cookiecutter.python_package_name }}.core import _
+from {{ cookiecutter.python_package_name }} import _
 from zope.interface import provider
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm

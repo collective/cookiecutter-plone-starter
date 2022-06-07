@@ -15,6 +15,7 @@ def context() -> dict:
         "python_package_name": "ploneorgbr",
         "plone_version": "6.0.0a4",
         "volto_version": "v16.0.0-alpha.4",
+        "language_code": "en",
         "github_organization": "plonegovbr",
     }
 

@@ -50,7 +50,7 @@ payload = {
         "{{ cookiecutter.python_package_name }}:initial",
     ],
     "setup_content": False,
-    "default_language": "en",
+    "default_language": "{{ cookiecutter.__profile_language }}",
     "portal_timezone": "America/Sao_Paulo",
 }
 

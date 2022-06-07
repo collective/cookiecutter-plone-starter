@@ -1,5 +1,6 @@
 """Post generation hook."""
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -10,6 +11,16 @@ WARNING = "\x1b[1;33m [WARNING]: "
 INFO = "\x1b[1;33m"
 HINT = "\x1b[3;33m"
 SUCCESS = "\x1b[1;32m [SUCCESS]: "
+
+
+VOLTO_CONFIG = """
+  config.settings = {
+    ...config.settings,
+    isMultilingual: false,
+    supportedLanguages: ['{{ cookiecutter.language_code }}'],
+    defaultLanguage: '{{ cookiecutter.language_code }}',
+  };
+"""
 
 
 VOLTO_ADDONS = [
@@ -61,6 +72,13 @@ def prepare_frontend(volto_version: str, description: str):
     src = (Path("frontend") / "Makefile.default").resolve()
     dst = (Path("frontend") / "Makefile").resolve()
     os.rename(src, dst)
+    # Add language code setting
+    cfg = (Path("frontend") / "src" / "config.js").resolve()
+    with open(cfg, "r") as fh:
+        data = fh.read()
+    with open(cfg, "w") as fh:
+        new_data = re.sub("\n  \/\/ Add here your project.*\n", VOLTO_CONFIG, data)
+        fh.write(new_data)
 
 
 def prepare_backend():
