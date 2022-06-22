@@ -70,6 +70,12 @@ start:  ## Start
 	$(MAKE) start-backend
 	$(MAKE) start-frontend
 
+.PHONY: clean
+clean:  ## Clean installation
+	@echo "Clean installation"
+	$(MAKE) -C "./backend/" clean
+	$(MAKE) -C "./frontend/" clean
+
 .PHONY: format
 format:  ## Format codebase
 	@echo "Format codebase"
