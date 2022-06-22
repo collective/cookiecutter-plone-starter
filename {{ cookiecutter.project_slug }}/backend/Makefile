@@ -147,6 +147,10 @@ create-site: instance/etc/zope.ini ## Create a new site from scratch
 start: ## Start a Plone instance on localhost:8080
 	PYTHONWARNINGS=ignore ./bin/runwsgi instance/etc/zope.ini
 
+.PHONY: debug
+debug: instance/etc/zope.ini ## Run debug console
+	PYTHONWARNINGS=ignore ./bin/zconsole debug instance/etc/zope.conf
+
 .PHONY: build-image
 build-image:  ## Build Docker Image
 	@docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile --build-arg PLONE_VERSION=$(PLONE_VERSION)

@@ -88,12 +88,18 @@ i18n:  ## Update locales
 	$(MAKE) -C "./backend/" i18n
 	$(MAKE) -C "./frontend/" i18n
 
-.PHONY: test
-test:  ## Test codebase
-	@echo "Test codebase"
+.PHONY: test-backend
+test-backend:  ## Test backend codebase
+	@echo "Test backend"
 	$(MAKE) -C "./backend/" test
+
+.PHONY: test-frontend
+test-frontend:  ## Test frontend codebase
+	@echo "Test frontend"
 	$(MAKE) -C "./frontend/" test
 
+.PHONY: test
+test:  test-backend test-frontend ## Test codebase
 
 .PHONY: build-images
 build-images:  ## Build docker images
