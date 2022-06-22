@@ -24,7 +24,7 @@ LINT=docker run --rm -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality
 
 PACKAGE_NAME={{ cookiecutter.python_package_name }}
 PACKAGE_PATH=src/{{ cookiecutter.python_package_name }}/src/
-IMAGE_NAME={{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend
+IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend
 IMAGE_TAG=latest
 CHECK_PATH=src/{{ cookiecutter.python_package_name }}/setup.py scripts/ $(PACKAGE_PATH)
 

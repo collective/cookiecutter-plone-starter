@@ -12,7 +12,7 @@ services:
     - "80:80"
 
   frontend:
-    image: {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
+    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
     environment:
       RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
     ports:
@@ -21,7 +21,7 @@ services:
       - backend
 
   backend:
-    image: {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:latest
+    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:latest
     environment:
       SITE: Plone
       ADDITIONAL_PROFILES: "{{ cookiecutter.python_package_name }}:default,{{ cookiecutter.python_package_name }}:initial"

@@ -7,7 +7,7 @@ SHELL:=bash
 .DELETE_ON_ERROR:
 MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
-IMAGE_NAME={{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend
+IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend
 IMAGE_TAG=latest
 
 NODEBIN = ./node_modules/.bin

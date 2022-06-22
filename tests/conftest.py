@@ -17,6 +17,7 @@ def context() -> dict:
         "volto_version": "v16.0.0-alpha.4",
         "language_code": "en",
         "github_organization": "plonegovbr",
+        "container_registry": "Docker Hub",
     }
 
 

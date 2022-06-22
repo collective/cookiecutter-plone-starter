@@ -4,6 +4,12 @@ import requests
 from cookiecutter.utils import simple_filter
 
 
+REGISTRIES = {
+    "Docker Hub": "",
+    "GitHub": "ghcr.io/",
+}
+
+
 @simple_filter
 def latest_volto(v) -> str:
     """Return the latest volto version."""
@@ -30,3 +36,9 @@ def gs_language_code(code: str) -> str:
         base_language, country = code.split("-")
         gs_code = f"{base_language}-{country.lower()}"
     return gs_code
+
+
+@simple_filter
+def docker_image_prefix(registry: str) -> str:
+    """Return the a prefix to be used with all Docker images."""
+    return REGISTRIES.get(registry, "")

@@ -138,9 +138,9 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            {{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-frontend
+            {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-frontend
           labels: |
-            org.label-schema.docker.cmd=docker run -d -p 3000:3000 {{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-frontend:latest
+            org.label-schema.docker.cmd=docker run -d -p 3000:3000 {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-frontend:latest
           tags: |
             type=ref,event=branch
             type=sha
@@ -155,8 +155,15 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
+          {%- if cookiecutter.container_registry == 'Docker Hub' %}
           username: {{"${{ secrets.DOCKERHUB_USERNAME }}"}}
           password: {{"${{ secrets.DOCKERHUB_TOKEN }}"}}
+          {%- endif %}
+          {%- if cookiecutter.container_registry == 'GitHub' %}
+          registry: ghcr.io
+          username: {{"${{ github.actor }}"}}
+          password: {{"${{ secrets.GITHUB_TOKEN }}"}}
+          {%- endif %}
 
       - name: Build and push
         uses: docker/build-push-action@v2
