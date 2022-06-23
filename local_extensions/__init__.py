@@ -3,7 +3,6 @@ import re
 import requests
 from cookiecutter.utils import simple_filter
 
-
 REGISTRIES = {
     "Docker Hub": "",
     "GitHub": "ghcr.io/",
