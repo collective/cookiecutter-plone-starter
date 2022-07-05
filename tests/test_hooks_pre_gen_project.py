@@ -109,3 +109,10 @@ def test_validate_python_package_name(bad_context: dict):
     errors = pre_gen_project.check_errors(bad_context)
     assert errors
     assert len(errors) == 4
+
+
+@pytest.mark.parametrize("value,expected", (("v16.13.1", "16"),))
+def test_node_major_version(value, expected):
+    """Test node_major_version."""
+    func = pre_gen_project.node_major_version
+    assert func(value) == expected

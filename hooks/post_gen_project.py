@@ -7,10 +7,32 @@ from pathlib import Path
 from textwrap import dedent
 
 TERMINATOR = "\x1b[0m"
-WARNING = "\x1b[1;33m [WARNING]: "
-INFO = "\x1b[1;33m"
-HINT = "\x1b[3;33m"
-SUCCESS = "\x1b[1;32m [SUCCESS]: "
+WARNING = "\x1b[1;33m"
+INFO = "\x1b[1;34m"
+HINT = "\x1b[3;35m"
+SUCCESS = "\x1b[1;32m"
+ERROR = "\x1b[1;31m"
+MSG_DELIMITER = "=" * 80
+
+
+def _error(msg: str) -> str:
+    """Format error message."""
+    return f"{ERROR}{msg}{TERMINATOR}"
+
+
+def _success(msg: str) -> str:
+    """Format success message."""
+    return f"{SUCCESS}{msg}{TERMINATOR}"
+
+
+def _warning(msg: str) -> str:
+    """Format warning message."""
+    return f"{WARNING}{msg}{TERMINATOR}"
+
+
+def _info(msg: str) -> str:
+    """Format info message."""
+    return f"{INFO}{msg}{TERMINATOR}"
 
 
 VOLTO_CONFIG = """
@@ -32,18 +54,13 @@ VOLTO_ADDONS = [
 ]
 
 
-def print_info(msg: str, prefix: str = "[INFO]: "):
-    """Print a INFO message."""
-    print(f"{prefix}{msg}{TERMINATOR}")
-
-
 def prepare_frontend(volto_version: str, description: str):
     """Run volto generator."""
-    print_info("Prepare frontend codebase")
+    print("Frontend codebase:")
     addons = " ".join([f"--addon {item}" for item in VOLTO_ADDONS])
     steps = [
         [
-            "Install latest @plone/generator-volto",
+            f"Install latest {_info('@plone/generator-volto')}",
             [
                 "npm",
                 "install",
@@ -57,7 +74,7 @@ def prepare_frontend(volto_version: str, description: str):
             "frontend",
         ],
         [
-            f"Generate frontend application with @plone/volto {volto_version}",
+            f"Generate frontend application with @plone/volto {_info(volto_version)}",
             f"yo @plone/volto frontend --description '{description}' {addons} "
             f"--skip-install --no-interactive --volto={volto_version}",
             True,
@@ -66,7 +83,7 @@ def prepare_frontend(volto_version: str, description: str):
     ]
     for step in steps:
         msg, command, shell, cwd = step
-        print_info(f"{msg}", "  -- ")
+        print(f" - {msg}")
         proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
     # Rename Makefile.default to Makefile
     src = (Path("frontend") / "Makefile.default").resolve()
@@ -83,30 +100,39 @@ def prepare_frontend(volto_version: str, description: str):
 
 def prepare_backend():
     """Apply black and isort to the generated codebase."""
-    print_info("Prepare backend codebase")
+    print("Backend codebase")
     steps = [
         ["Format generated code in the backend", ["make", "format"], False, "backend"]
     ]
     for step in steps:
         msg, command, shell, cwd = step
-        print_info(f"{msg}", "  -- ")
+        print(f" - {msg}")
         proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
 
 
 volto_version = "{{ cookiecutter.volto_version }}"
 description = "{{ cookiecutter.description }}"
-prepare_frontend(volto_version=volto_version, description=description)
-prepare_backend()
 
 
-msg = dedent(
+def main():
+    """Final fixes."""
+    prepare_frontend(volto_version=volto_version, description=description)
+    print("")
+    prepare_backend()
+    print(f"{MSG_DELIMITER}")
+    msg = dedent(
+        f"""
+        {_success('Project "{{ cookiecutter.project_title }}" was generated')}
+
+        Now, code it, create a git repository, push to your organization.
+
+        Sorry for the convenience,
+        The Plone Community.
     """
-    ===============================================================================
-    Project "{{ cookiecutter.project_title }}" was generated.
-    Now, code it, create a git repository, push to your organization.
-    Sorry for the convenience.
-    ===============================================================================
-"""
-)
+    )
+    print(msg)
+    print(f"{MSG_DELIMITER}")
 
-print(msg)
+
+if __name__ == "__main__":
+    main()
