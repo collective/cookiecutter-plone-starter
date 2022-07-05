@@ -26,7 +26,7 @@ max_line_length = off
 # 4 space indentation
 indent_size = 4
 
-[*.{html,dtml,pt,zpt,xml,zcml,js,json,less,css}]
+[*.{html,dtml,pt,zpt,xml,zcml,js,json,less,css,yml,yaml}]
 # 2 space indentation
 indent_size = 2
 
