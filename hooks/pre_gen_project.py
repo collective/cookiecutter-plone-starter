@@ -50,6 +50,10 @@ SUPPORTED_NODE_VERSION = [
     "16",
 ]
 
+
+MIN_DOCKER_VERSION = "20.10"
+
+
 output_path = Path().resolve()
 
 context = {
@@ -108,9 +112,31 @@ VALIDATORS = {
 
 def node_major_version(value: str) -> str:
     """Parse value and return the major version."""
-    value = value.strip()
     match = re.match(r"v(\d{1,3})\.\d{1,3}.\d{1,3}", value)
     return match.groups()[0] if match else ""
+
+
+def docker_version(value: str) -> str:
+    """Parse value and return the docker version."""
+    value = value.strip()
+    match = re.match(r"Docker version (\d{2}).(\d{1,2}).(\d{1,2})", value)
+    if match:
+        groups = match.groups()
+        return f"{groups[0]}.{groups[1]}"
+    return ""
+
+
+def _get_command_version(cmd: str) -> str:
+    """Get version of a command."""
+    try:
+        raw_version = (
+            subprocess.run([cmd, "--version"], capture_output=True)
+            .stdout.decode()
+            .strip()
+        )
+    except FileNotFoundError:
+        raw_version = ""
+    return raw_version
 
 
 def check_python_version() -> str:
@@ -125,11 +151,8 @@ def check_python_version() -> str:
 
 def check_node_version() -> str:
     """Check if node version is supported."""
-    try:
-        raw_version = subprocess.run(
-            ["node", "--version"], capture_output=True
-        ).stdout.decode()
-    except FileNotFoundError:
+    raw_version = _get_command_version("node")
+    if not raw_version:
         return "NodeJS not found."
     else:
         version = node_major_version(raw_version)
@@ -140,11 +163,40 @@ def check_node_version() -> str:
         )
 
 
+def check_docker_version() -> str:
+    """Check if docker version is supported."""
+    raw_version = _get_command_version("docker")
+    if not raw_version:
+        return "Docker not found."
+    else:
+        version = docker_version(raw_version)
+        return (
+            ""
+            if version >= MIN_DOCKER_VERSION
+            else f"Docker version is not supported: Got {raw_version}"
+        )
+
+
+def check_yo_version() -> str:
+    """Check if yo is installed."""
+    raw_version = _get_command_version("yo")
+    return "" if raw_version else "Yeoman not found."
+
+
+def check_git_version() -> str:
+    """Check if git is installed."""
+    raw_version = _get_command_version("git")
+    return "" if raw_version else "Git not found."
+
+
 def sanity_check() -> bool:
     """Run sanity checks on the system."""
     checks = {
         "Python": {"func": check_python_version, "level": "error"},
         "Node": {"func": check_node_version, "level": "error"},
+        "yo": {"func": check_yo_version, "level": "warning"},
+        "Docker": {"func": check_docker_version, "level": "warning"},
+        "git": {"func": check_git_version, "level": "warning"},
     }
     has_error = False
     print("Running sanity checks")
@@ -152,11 +204,14 @@ def sanity_check() -> bool:
         func = check_info["func"]
         status = func()
         level = check_info["level"]
-        if status:
-            has_error = has_error and (level == "error")
+        if not status:
+            msg = f"{_success('✓')}"
+        elif level == "error":
+            has_error = True
             msg = f"{_error(status)}"
         else:
-            msg = f"{_success('✓')}"
+            has_error = True
+            msg = f"{_warning(status)}"
         print(f"  - {title}: {msg}")
     return not (has_error)
 
