@@ -78,6 +78,7 @@ destroy: ## Provision Vagrant box
 		@echo "$(GREEN)==> Destroy Vagrant box $(RESET)"
 		sudo vagrant destroy
 		sudo rm -Rf .vagrant_private_key .vagrant
+		ssh-keygen -f ~/.ssh/known_hosts -R "[127.0.0.1]:2222"
 	fi
 
 .PHONY: provision
@@ -87,7 +88,7 @@ provision: bin/ansible ## Provision Vagrant box
 		sudo vagrant up
 		sudo cp .vagrant/machines/default/virtualbox/private_key .vagrant_private_key
 		USER=`whoami` sudo chown ${USER}: .vagrant_private_key
-		ssh-keygen -f ~/.ssh/known_hosts -R "[127.0.0.1]:2222"
+		ssh-keyscan -p 2222 -H 127.0.0.1 >> ~/.ssh/known_hosts
 	fi
 
 .PHONY: run-playbook

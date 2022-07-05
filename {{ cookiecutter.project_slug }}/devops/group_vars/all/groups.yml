@@ -1,5 +1,5 @@
 ---
 user_groups:
   plone:
-    description: 'Plone'
-    state: present
+    description: "Plone"
+    state: "present"

@@ -2,22 +2,13 @@
 
 ## Setup
 
-Install Python 3 virtual environment and Ansible
-
-```shell
-cd devops
-make clean
-make setup
-```
-
-## Source configuration
-
-### For Local Deployment (Using Vagrant)
+### Environment configuration
+#### For Local Deployment (Using Vagrant)
 
 ```shell
 source .env_local
 ```
-### For Production
+#### For Production
 
 Create `.env_prod`, if it does not exist, setting all values defined in `.env_local`, then:
 
@@ -27,6 +18,25 @@ source .env_prod
 
 Also, add a `prod.yml` file to `inventory` folder (with information about the production server), and a `{{ cookiecutter.github_organization }}-prod.yml` to `host_vars` folder.
 
+### Install Ansible
+
+Install Python 3 virtual environment and Ansible
+
+```shell
+cd devops
+make clean
+make setup
+```
+
+### Configure SSH key
+
+Edit the `group_vars/users.yml` file and replace the line **public_keys: []** with
+
+```yaml
+    public_keys:
+      - '<your ssh public key>'
+
+```
 
 ## Docker configuration
 

@@ -1,8 +1,8 @@
 ---
 ssh_port: 22
-hostname: 'local'
-fqdn: {{ '{{ hostname }}.plone.org.br' }}
+hostname: "vagrant"
+fqdn: {{ "{{ hostname }}.localhost" }}
 swap_file_size_mb: '512'
 additional_ports:
-    - 80
-    - 443
+- 80
+- 443
