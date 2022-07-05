@@ -210,7 +210,6 @@ def sanity_check() -> bool:
             has_error = True
             msg = f"{_error(status)}"
         else:
-            has_error = True
             msg = f"{_warning(status)}"
         print(f"  - {title}: {msg}")
     return not (has_error)
