@@ -85,10 +85,12 @@ def prepare_frontend(volto_version: str, description: str):
         msg, command, shell, cwd = step
         print(f" - {msg}")
         proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
-    # Rename Makefile.default to Makefile
-    src = (Path("frontend") / "Makefile.default").resolve()
-    dst = (Path("frontend") / "Makefile").resolve()
-    os.rename(src, dst)
+    # Rename template files
+    frontend_path = Path("frontend").resolve()
+    for src in frontend_path.glob("*.default"):
+        dst_filename = src.name.replace(".default", "")
+        dst = (frontend_path / dst_filename).resolve()
+        os.rename(src, dst)
     # Add language code setting
     cfg = (Path("frontend") / "src" / "config.js").resolve()
     with open(cfg, "r") as fh:
