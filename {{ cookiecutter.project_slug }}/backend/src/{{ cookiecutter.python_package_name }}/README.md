@@ -4,13 +4,9 @@
 
 ## Features
 
-### CORS settings
+### Content Types
 
-Implement CORS settings for this package
-
-### Content types
-
-- Training
+- TBD
 
 ### Initial content
 
@@ -19,22 +15,15 @@ This package contains a simple volto configuration.
 Installation
 ------------
 
-Install {{ cookiecutter.python_package_name }} by adding it to your buildout:
-```ini
-[buildout]
+Install {{ cookiecutter.python_package_name }} with `pip`:
 
-...
-
-eggs =
-    {{ cookiecutter.python_package_name }}
+```shell
+pip install {{ cookiecutter.python_package_name }}
 ```
-
-Then running `buildout`
-
 And to create the Plone site:
 
 ```shell
-./bin/instance run scripts/create_site.py
+make create_site
 ```
 
 ## Contribute
