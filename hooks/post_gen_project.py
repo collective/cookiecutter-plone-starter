@@ -54,6 +54,16 @@ VOLTO_ADDONS = [
 ]
 
 
+def run_cmd(command: str, shell: bool, cwd: str) -> bool:
+    proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
+    if proc.returncode:
+        # Create log on the folder containing the project
+        log_file = Path("../plone_starter_error.log").resolve()
+        log_file.write_bytes(proc.stderr)
+        print(_error(f"There was an error, see {log_file} for details"))
+    return False if proc.returncode else True
+
+
 def prepare_frontend(volto_version: str, description: str):
     """Run volto generator."""
     print("Frontend codebase:")
@@ -84,7 +94,10 @@ def prepare_frontend(volto_version: str, description: str):
     for step in steps:
         msg, command, shell, cwd = step
         print(f" - {msg}")
-        proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
+        result = run_cmd(command, shell=shell, cwd=cwd)
+        if not result:
+            sys.exit(1)
+
     # Rename template files
     frontend_path = Path("frontend").resolve()
     for src in frontend_path.glob("*.default"):
@@ -109,7 +122,9 @@ def prepare_backend():
     for step in steps:
         msg, command, shell, cwd = step
         print(f" - {msg}")
-        proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
+        result = run_cmd(command, shell=shell, cwd=cwd)
+        if not result:
+            sys.exit(1)
 
 
 volto_version = "{{ cookiecutter.volto_version }}"
