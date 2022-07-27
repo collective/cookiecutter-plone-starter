@@ -64,6 +64,10 @@ i18n-ci: ## Check if i18n is not synced
 test: ## Run tests
 	CI=true yarn test
 
+.PHONY: storybook
+storybook: ## Generate Storybook
+	yarn storybook
+
 .PHONY: build-image
 build-image:  ## Build Docker Image
 	@docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile
