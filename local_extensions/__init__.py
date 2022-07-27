@@ -9,13 +9,18 @@ REGISTRIES = {
 }
 
 
+VOLTO_MIN_VERSION = 16
+
+
 @simple_filter
 def latest_volto(v) -> str:
     """Return the latest volto version."""
     url: str = "https://registry.npmjs.org/@plone/volto"
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
-    return [version for version in data["dist-tags"].values()][0]
+    versions = [version for version in data["dist-tags"].values()]
+    valid_versions = [v for v in versions if int(v.split(".")[0]) >= VOLTO_MIN_VERSION]
+    return valid_versions[0]
 
 
 @simple_filter
