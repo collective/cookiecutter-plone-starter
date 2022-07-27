@@ -1,7 +1,7 @@
 [
   {
     "_parent": "",
-    "type": "Folder",
+    "type": "Document",
     "id": "images",
     "title": "Images",
     "description": "Image bank.",
