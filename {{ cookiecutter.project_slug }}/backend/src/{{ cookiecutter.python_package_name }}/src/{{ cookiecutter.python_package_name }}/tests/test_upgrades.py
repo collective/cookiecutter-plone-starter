@@ -1,4 +1,5 @@
 """Upgrades tests for this package."""
+from parameterized import parameterized
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from {{ cookiecutter.python_package_name }}.testing import {{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING  # noqa: E501
@@ -11,9 +12,6 @@ class UpgradeStepIntegrationTest(unittest.TestCase):
 
     layer = {{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING
     profile = "{{ cookiecutter.python_package_name }}:default"
-    src = ""
-    dst = ""
-    steps = 1
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -36,10 +34,13 @@ class UpgradeStepIntegrationTest(unittest.TestCase):
             steps = self.available_steps()
             self.assertEqual(len(steps), 1)
 
-# Example of upgrade step test
-# class V{{ cookiecutter.__profile_version }}UpgradeTest(UpgradeStepIntegrationTest):
-#     """Test upgrade step from version {{ cookiecutter.__profile_version }}."""
-
-#     src = "{{ cookiecutter.__profile_version }}"
-#     dst = "20230229001"
-#     steps = 1
+    # # Example of upgrade step test
+    # @parameterized.expand(
+    #     [
+    #         ("{{ cookiecutter.__profile_version }}", "20230229001", 1),
+    #     ]
+    # )
+    # def test_available(self, src, dst, expected):
+    #     """Test upgrade step is available."""
+    #     steps = self.available_steps(src, dst)
+    #     self.assertEqual(len(steps), expected)

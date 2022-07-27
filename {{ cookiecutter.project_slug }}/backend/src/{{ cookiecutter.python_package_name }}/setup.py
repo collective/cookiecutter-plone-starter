@@ -14,7 +14,7 @@ long_description = "\n\n".join(
 
 setup(
     name="{{ cookiecutter.python_package_name }}",
-    version="1.0a1",
+    version="1.0.0a1",
     description="{{ cookiecutter.project_title }} configuration package.",
     long_description=long_description,
     classifiers=[
@@ -31,7 +31,7 @@ setup(
     keywords="Python Plone CMS",
     author="{{ cookiecutter.author }}",
     author_email="{{ cookiecutter.email }}",
-    url="https://github.com/https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}",
+    url="https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}",
     project_urls={
         "PyPI": "https://pypi.python.org/pypi/{{ cookiecutter.python_package_name }}",
         "Source": "https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}",
@@ -51,6 +51,7 @@ setup(
     ],
     extras_require={
         "test": [
+            "parameterized",
             "zest.releaser[recommended]",
             "plone.app.testing[robot]>=7.0.0a3",
             "plone.restapi[test]",
