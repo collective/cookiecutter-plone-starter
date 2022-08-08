@@ -19,14 +19,17 @@ PLONE_VERSION={{ cookiecutter.plone_version }}
 
 BACKEND_FOLDER=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-CODE_QUALITY_VERSION=1.0.1
-LINT=docker run --rm -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality:${CODE_QUALITY_VERSION} check
+CODE_QUALITY_VERSION=2.0.0
+ifndef LOG_LEVEL
+	LOG_LEVEL=INFO
+endif
+CURRENT_USER=$$(whoami)
+USER_INFO=$$(id -u ${CURRENT_USER}):$$(getent group ${CURRENT_USER}|cut -d: -f3)
+LINT=docker run --rm -e LOG_LEVEL="${LOG_LEVEL}" -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality:${CODE_QUALITY_VERSION} check
+FORMAT=docker run --rm --user="${USER_INFO}" -e LOG_LEVEL="${LOG_LEVEL}" -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality:${CODE_QUALITY_VERSION} format
 
-PACKAGE_NAME={{ cookiecutter.python_package_name }}
-PACKAGE_PATH=src/{{ cookiecutter.python_package_name }}/src/
 IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend
 IMAGE_TAG=latest
-CHECK_PATH=src/{{ cookiecutter.python_package_name }}/setup.py scripts/ $(PACKAGE_PATH)
 
 # Add the following 'help' target to your Makefile
 # And add help text after each target name starting with '\#\#'
@@ -76,10 +79,6 @@ instance/etc/zope.ini:	bin/pip
 	bin/cookiecutter -f --no-input --config-file instance.yaml https://github.com/plone/cookiecutter-zope-instance
 	mkdir -p var/{filestorage,blobstorage,cache,log}
 
-bin/black:	bin/pip
-	@echo "$(GREEN)==> Install Code Quality tools$(RESET)"
-	bin/pip install -r https://raw.githubusercontent.com/plone/code-quality/v$(CODE_QUALITY_VERSION)/requirements.txt
-
 # i18n
 bin/i18ndude:	bin/pip
 	@echo "$(GREEN)==> Install translation tools$(RESET)"
@@ -101,35 +100,32 @@ build-dev: instance/etc/zope.ini ## Create virtualenv and run buildout
 	bin/pip install -r requirements/dev.txt
 
 .PHONY: format
-format:  bin/black ## Format the codebase according to our standards
+format: ## Format the codebase according to our standards
 	@echo "$(GREEN)==> Format codebase$(RESET)"
-	bin/isort ${CHECK_PATH}
-	bin/black ${CHECK_PATH}
-	find "${PACKAGE_PATH}" -name '*.xml' |xargs bin/zpretty -x -i
-	find "${PACKAGE_PATH}" -name '*.zcml' |xargs bin/zpretty -z -i
+	$(FORMAT)
 
 .PHONY: lint
 lint: lint-isort lint-black lint-flake8 lint-zpretty ## check code style
 
 .PHONY: lint-black
 lint-black: ## validate black formating
-	$(LINT) black "$(CHECK_PATH)"
+	$(LINT) black
 
 .PHONY: lint-flake8
 lint-flake8: ## validate black formating
-	$(LINT) flake8 "$(CHECK_PATH)"
+	$(LINT) flake8
 
 .PHONY: lint-isort
 lint-isort: ## validate using isort
-	$(LINT) isort "$(CHECK_PATH)"
+	$(LINT) isort
 
 .PHONY: lint-pyroma
 lint-pyroma: ## validate using pyroma
-	$(LINT) pyroma src/{{ cookiecutter.python_package_name }}/
+	$(LINT) pyroma
 
 .PHONY: lint-zpretty
 lint-zpretty: ## validate ZCML/XML using zpretty
-	$(LINT) zpretty "$(PACKAGE_PATH)"
+	$(LINT) zpretty
 
 .PHONY: test
 test: ## run tests
