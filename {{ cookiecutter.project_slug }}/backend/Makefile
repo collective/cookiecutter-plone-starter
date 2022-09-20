@@ -71,16 +71,17 @@ clean-test: ## remove test and coverage artifacts
 bin/pip:
 	@echo "$(GREEN)==> Setup Virtual Env$(RESET)"
 	python3 -m venv .
-	bin/pip install -U "pip" "wheel" "cookiecutter"
+	bin/pip install -U "pip" "wheel" "cookiecutter" "mxdev"
 
 instance/etc/zope.ini:	bin/pip
 	@echo "$(GREEN)==> Install Plone and create instance$(RESET)"
-	bin/pip install Plone -c https://dist.plone.org/release/$(PLONE_VERSION)/constraints.txt
+	bin/mxdev -c mx.ini
+	bin/pip install -r requirements-mxdev.txt
 	bin/cookiecutter -f --no-input --config-file instance.yaml https://github.com/plone/cookiecutter-zope-instance
 	mkdir -p var/{filestorage,blobstorage,cache,log}
 
 # i18n
-bin/i18ndude:	bin/pip
+bin/i18ndude: bin/pip
 	@echo "$(GREEN)==> Install translation tools$(RESET)"
 	bin/pip install i18ndude
 

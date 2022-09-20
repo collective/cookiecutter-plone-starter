@@ -35,6 +35,7 @@ report.html
 .tox/
 reports/
 venv/
+*-mxdev.txt
 # excludes
 live.cfg
 inituser

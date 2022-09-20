@@ -7,3 +7,4 @@ pip-selfcheck.json
 project-title
 projecttitle.projectname/
 .pytest_cache
+*/__pycache__/
