@@ -39,7 +39,7 @@ Install `Docker` according to the [official documentation](https://docs.docker.c
 
 ## Usage
 
-Generate a new Project using this:
+Generate a new Plone 6 Project:
 
 ```shell
 cookiecutter gh:collective/cookiecutter-plone-starter
