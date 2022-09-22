@@ -44,7 +44,7 @@ install-backend:  ## Create virtualenv and install Plone
 	$(MAKE) -C "./backend/" build-dev
 	$(MAKE) create-site
 
-	.PHONY: build-backend
+.PHONY: build-backend
 build-backend:  ## Build Backend
 	$(MAKE) -C "./backend/" build-dev
 
