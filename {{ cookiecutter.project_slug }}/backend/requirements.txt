@@ -2,3 +2,6 @@
 -e src/{{cookiecutter.python_package_name}}
 
 zope.testrunner
+
+# Add required add-ons
+# collective.easyform
