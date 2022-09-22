@@ -53,18 +53,38 @@ For an initial build of backend and frontend:
 make install
 ```
 
-To start both backend and frontend:
+In two separate terminal sessions, start backend and frontend:
+
+To start backend:
 
 ```shell
-make start
+make start-backend
 ```
 
-After changes please build and start both:
+To start frontend:
+
+```shell
+make start-frontend
+```
+
+After changes please re-build both with
 
 ```shell
 make build
-make start
 ```
+
+and restart backend and frontend by stopping and re-running
+
+
+```shell
+make start-backend
+```
+
+
+```shell
+make start-frontend
+```
+
 
 
 ## Project Generation Options
