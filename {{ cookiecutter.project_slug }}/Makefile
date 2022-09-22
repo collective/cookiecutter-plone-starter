@@ -62,11 +62,14 @@ install:  ## Install
 	$(MAKE) install-backend
 	$(MAKE) install-frontend
 
+# TODO production build
+
 .PHONY: build
-build:  ## Build
+build:  ## Build in development mode
 	@echo "Build"
 	$(MAKE) build-backend
-	$(MAKE) build-frontend
+	$(MAKE) install-frontend
+
 
 .PHONY: start
 start:  ## Start
