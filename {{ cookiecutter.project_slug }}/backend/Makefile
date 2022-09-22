@@ -75,8 +75,6 @@ bin/pip:
 
 instance/etc/zope.ini:	bin/pip
 	@echo "$(GREEN)==> Install Plone and create instance$(RESET)"
-	bin/mxdev -c mx.ini
-	bin/pip install -r requirements-mxdev.txt
 	bin/cookiecutter -f --no-input --config-file instance.yaml https://github.com/plone/cookiecutter-zope-instance
 	mkdir -p var/{filestorage,blobstorage,cache,log}
 
@@ -90,15 +88,14 @@ i18n: bin/i18ndude ## Update locales
 	@echo "$(GREEN)==> Updating locales$(RESET)"
 	bin/update_locale
 
-.PHONY: build
-build: instance/etc/zope.ini ## Create virtualenv and run buildout
-	@echo "$(GREEN)==> Setup Build$(RESET)"
-	bin/pip install -r requirements.txt
+# TODO `make build`
+# build:
 
-.PHONY: build
-build-dev: instance/etc/zope.ini ## Create virtualenv and run buildout
+.PHONY: build-dev
+build-dev: instance/etc/zope.ini ## pip install Plone packages
 	@echo "$(GREEN)==> Setup Build$(RESET)"
-	bin/pip install -r requirements/dev.txt
+	bin/mxdev -c mx.ini
+	bin/pip install -r requirements-mxdev.txt
 
 .PHONY: format
 format: ## Format the codebase according to our standards
