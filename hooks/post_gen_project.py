@@ -46,7 +46,6 @@ VOLTO_CONFIG = """
 
 
 VOLTO_ADDONS = [
-    "volto-slate:minimalDefault,simpleLink",
     "@eeacms/volto-accordion-block",
     "@kitconcept/volto-blocks-grid",
     "@kitconcept/volto-slider-block",
@@ -68,6 +67,11 @@ def prepare_frontend(volto_version: str, description: str):
     """Run volto generator."""
     print("Frontend codebase:")
     addons = " ".join([f"--addon {item}" for item in VOLTO_ADDONS])
+    canary = (
+        " --canary"
+        if [x for x in ("alpha", "beta", "rc") if x in volto_version]
+        else ""
+    )
     steps = [
         [
             f"Install latest {_info('@plone/generator-volto')}",
@@ -86,7 +90,7 @@ def prepare_frontend(volto_version: str, description: str):
         [
             f"Generate frontend application with @plone/volto {_info(volto_version)}",
             f"yo @plone/volto frontend --description '{description}' {addons} "
-            f"--skip-install --no-interactive --volto={volto_version}",
+            f"--skip-install --no-interactive --volto={volto_version}{canary}",
             True,
             "frontend",
         ],
