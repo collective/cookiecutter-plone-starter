@@ -67,6 +67,8 @@ To start frontend:
 make start-frontend
 ```
 
+You can stop each one with `ctrl-c`.
+
 After changes please re-build both with
 
 ```shell
