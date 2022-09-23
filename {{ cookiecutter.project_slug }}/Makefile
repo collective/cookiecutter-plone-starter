@@ -44,6 +44,10 @@ install-backend:  ## Create virtualenv and install Plone
 	$(MAKE) -C "./backend/" build-dev
 	$(MAKE) create-site
 
+.PHONY: build-backend
+build-backend:  ## Build Backend
+	$(MAKE) -C "./backend/" build-dev
+
 .PHONY: create-site
 create-site: ## Create a Plone site with default content
 	$(MAKE) -C "./backend/" create-site
@@ -58,11 +62,14 @@ install:  ## Install
 	$(MAKE) install-backend
 	$(MAKE) install-frontend
 
+# TODO production build
+
 .PHONY: build
-build:  ## Build
+build:  ## Build in development mode
 	@echo "Build"
 	$(MAKE) build-backend
-	$(MAKE) build-frontend
+	$(MAKE) install-frontend
+
 
 .PHONY: start
 start:  ## Start

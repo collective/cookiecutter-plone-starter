@@ -1,0 +1,1 @@
+-c https://dist.plone.org/release/{{cookiecutter.plone_version}}/constraints.txt

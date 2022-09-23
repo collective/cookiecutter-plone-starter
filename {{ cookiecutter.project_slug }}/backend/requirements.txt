@@ -1,2 +1,7 @@
--r requirements/unreleased.txt
-src/{{ cookiecutter.python_package_name }}
+-c constraints.txt
+-e src/{{cookiecutter.python_package_name}}
+
+zope.testrunner
+
+# Add required add-ons
+# collective.easyform
