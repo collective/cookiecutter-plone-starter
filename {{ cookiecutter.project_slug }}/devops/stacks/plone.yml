@@ -97,6 +97,12 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
+        # AUTHENTICATION
+        # Note: all dollar signs in the hash need to be doubled for escaping.
+        # To create user:password pair, it's possible to use this command:
+        # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+        # Defaults to admin:admin
+        - traefik.http.middlewares.backend-auth.basicauth.users=admin:$$apr1$$uZPT5Fgu$$AmlIdamxT5ipBvPlsdfD70
         # SERVICE
         - traefik.http.services.plone-backend.loadbalancer.server.port=8080
         # Plone API
@@ -104,8 +110,17 @@ services:
         - traefik.http.routers.backend.entrypoints=https
         - traefik.http.routers.backend.tls=true
         - traefik.http.routers.backend.service=plone-backend
-        - traefik.http.middlewares.backend.addprefix.prefix=/VirtualHostBase/https/${FQDN?Unset}/Plone/++api++/VirtualHostRoot
-        - traefik.http.routers.backend.middlewares=gzip, backend
+        - "traefik.http.middlewares.backend.replacepathregex.regex=^/\\+\\+api\\+\\+($$|/.*)"
+        - "traefik.http.middlewares.backend.replacepathregex.replacement=/VirtualHostBase/https/${FQDN?Unset}/Plone/++api++/VirtualHostRoot/$$1"
+        - traefik.http.routers.backend.middlewares=gzip,backend
+        # Plone ClassicUI - uncomment if not needed - protected with basic auth (prevent SEOs from crawl it)
+        - traefik.http.routers.backend-classic.rule=Host(`${FQDN?Unset}`) && PathPrefix(`/ClassicUI`)
+        - traefik.http.routers.backend-classic.entrypoints=https
+        - traefik.http.routers.backend-classic.tls=true
+        - traefik.http.routers.backend-classic.service=plone-backend
+        - "traefik.http.middlewares.backend-classic.replacepathregex.regex=^/ClassicUI($$|/.*)"
+        - "traefik.http.middlewares.backend-classic.replacepathregex.replacement=/VirtualHostBase/https/${FQDN?Unset}/Plone/VirtualHostRoot/_vh_ClassicUI/$$1"
+        - traefik.http.routers.backend-classic.middlewares=gzip,backend-auth,backend-classic
 
   db:
     image: postgres:14.2
