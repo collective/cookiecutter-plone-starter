@@ -5,7 +5,6 @@
   roles:
   - role: tangrama.common
   - role: geerlingguy.swap
-  - role: tangrama.motd
   - role: tangrama.ufw
   - role: tangrama.users
 
