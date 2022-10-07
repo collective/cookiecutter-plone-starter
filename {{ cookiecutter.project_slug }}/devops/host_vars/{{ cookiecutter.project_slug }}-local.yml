@@ -1,7 +1,7 @@
 ---
 ssh_port: 22
 hostname: "vagrant"
-fqdn: {{ "{{ hostname }}.localhost" }}
+fqdn: {{ "'{{ hostname }}.localhost'" }}
 swap_file_size_mb: '512'
 additional_ports:
 - 80
