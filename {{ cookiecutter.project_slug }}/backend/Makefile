@@ -75,8 +75,7 @@ bin/pip:
 
 instance/etc/zope.ini:	bin/pip
 	@echo "$(GREEN)==> Install Plone and create instance$(RESET)"
-	bin/cookiecutter -f --no-input --config-file instance.yaml https://github.com/plone/cookiecutter-zope-instance
-	mkdir -p var/{filestorage,blobstorage,cache,log}
+	bin/cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
 # i18n
 bin/i18ndude: bin/pip
@@ -92,7 +91,7 @@ i18n: bin/i18ndude ## Update locales
 # build:
 
 .PHONY: build-dev
-build-dev: instance/etc/zope.ini ## pip install Plone packages
+build-dev: ## pip install Plone packages
 	@echo "$(GREEN)==> Setup Build$(RESET)"
 	bin/mxdev -c mx.ini
 	bin/pip install -r requirements-mxdev.txt
