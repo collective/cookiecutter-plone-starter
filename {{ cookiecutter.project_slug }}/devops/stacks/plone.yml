@@ -57,7 +57,7 @@ services:
       - traefik-public
 
   frontend:
-    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
+    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization|lower }}/{{ cookiecutter.project_slug }}-frontend:latest
     environment:
       RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
     depends_on:
@@ -82,7 +82,7 @@ services:
         - traefik.http.routers.frontend.middlewares=gzip
 
   backend:
-    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:latest
+    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization|lower }}/{{ cookiecutter.project_slug }}-backend:latest
     environment:
       SITE: Plone
       RELSTORAGE_DSN: "dbname='plone' user='plone' host='db' password='plone'"
