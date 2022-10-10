@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "frontend/**"
+      - ".github/workflows/frontend.yml"
 
 env:
   node-version: 16.x
