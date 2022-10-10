@@ -1,5 +1,5 @@
 -c constraints.txt
--e src/{{cookiecutter.python_package_name}}
+-e src/{{cookiecutter.python_package_name}}[test]
 
 zope.testrunner
 
