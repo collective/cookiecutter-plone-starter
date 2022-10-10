@@ -72,23 +72,23 @@ docker-login: .docker/config.json  ## Login with Docker
 docker-setup:  ## Setup docker context
 	${DOCKER} context create ${CONTEXT} --description "{{ cookiecutter.project_title }} deployment" --docker "host=${CONTEXT_HOST}"
 
-.PHONY: provision
-destroy: ## Provision Vagrant box
-	if [ "$(DEPLOY_ENV)" = "local" ]; then
-		@echo "$(GREEN)==> Destroy Vagrant box $(RESET)"
-		sudo vagrant destroy
-		sudo rm -Rf .vagrant_private_key .vagrant
-		ssh-keygen -f ~/.ssh/known_hosts -R "[127.0.0.1]:2222"
+.PHONY: destroy
+destroy: ## Destroy Vagrant box
+	if [ "$(DEPLOY_ENV)" = "local" ]; then \
+		echo "$(GREEN)==> Destroy Vagrant box $(RESET)"; \
+		sudo vagrant destroy; \
+		sudo rm -Rf .vagrant_private_key .vagrant; \
+		ssh-keygen -f ~/.ssh/known_hosts -R "[127.0.0.1]:2222"; \
 	fi
 
 .PHONY: provision
 provision: bin/ansible ## Provision Vagrant box
-	if [ "$(DEPLOY_ENV)" = "local" ]; then
-		@echo "$(GREEN)==> Provision Vagrant box $(RESET)"
-		sudo vagrant up
-		sudo cp .vagrant/machines/default/virtualbox/private_key .vagrant_private_key
-		USER=`whoami` sudo chown ${USER}: .vagrant_private_key
-		ssh-keyscan -p 2222 -H 127.0.0.1 >> ~/.ssh/known_hosts
+	if [ "$(DEPLOY_ENV)" = "local" ]; then \
+		echo "$(GREEN)==> Provision Vagrant box $(RESET)"; \
+		sudo vagrant up; \
+		sudo cp .vagrant/machines/default/virtualbox/private_key .vagrant_private_key; \
+		USER=`whoami` sudo chown ${USER}: .vagrant_private_key; \
+		ssh-keyscan -p 2222 -H 127.0.0.1 >> ~/.ssh/known_hosts; \
 	fi
 
 .PHONY: run-playbook
