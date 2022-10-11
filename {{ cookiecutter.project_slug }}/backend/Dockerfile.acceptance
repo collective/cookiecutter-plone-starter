@@ -9,7 +9,7 @@ LABEL maintainer="{{ cookiecutter.author }} <{{ cookiecutter.email }}>" \
 ENV ZSERVER_HOST=0.0.0.0
 ENV ZSERVER_PORT=55001
 ENV CONFIGURE_PACKAGES="plone.restapi,plone.volto,plone.volto.cors,{{ cookiecutter.python_package_name }}"
-ENV APPLY_PROFILES="dlr.internet:default"
+ENV APPLY_PROFILES="{{ cookiecutter.python_package_name }}:default"
 RUN ./bin/pip install "plone.app.robotframework==2.0.0a6" "plone.app.testing[robot]==7.0.0a3"
 
 # Add local code

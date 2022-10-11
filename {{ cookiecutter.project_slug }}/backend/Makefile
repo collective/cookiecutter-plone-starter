@@ -31,6 +31,22 @@ FORMAT=docker run --rm --user="${USER_INFO}" -e LOG_LEVEL="${LOG_LEVEL}" -v "${B
 IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend
 IMAGE_TAG=latest
 
+# Python checks
+PYTHON?=python3
+
+# installed?
+ifeq (, $(shell which $(PYTHON) ))
+  $(error "PYTHON=$(PYTHON) not found in $(PATH)")
+endif
+
+# version ok?
+PYTHON_VERSION_MIN=3.8
+PYTHON_VERSION_OK=$(shell $(PYTHON) -m 'import sys; print((int(sys.version_info[0]), int(sys.version_info[1])) > tuple(map(int, "$(PYTHON_VERSION_MIN)".split("."))))')
+ifeq ($(PYTHON_VERSION_OK),0)
+  $(error "Need python $(PYTHON_VERSION) >= $(PYTHON_VERSION_MIN)")
+endif
+
+
 # Add the following 'help' target to your Makefile
 # And add help text after each target name starting with '\#\#'
 .PHONY: help
@@ -70,13 +86,12 @@ clean-test: ## remove test and coverage artifacts
 
 bin/pip:
 	@echo "$(GREEN)==> Setup Virtual Env$(RESET)"
-	python3 -m venv .
+	$(PYTHON) -m venv .
 	bin/pip install -U "pip" "wheel" "cookiecutter" "mxdev"
 
 instance/etc/zope.ini:	bin/pip
 	@echo "$(GREEN)==> Install Plone and create instance$(RESET)"
-	bin/cookiecutter -f --no-input --config-file instance.yaml https://github.com/plone/cookiecutter-zope-instance
-	mkdir -p var/{filestorage,blobstorage,cache,log}
+	bin/cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
 # i18n
 bin/i18ndude: bin/pip
@@ -92,7 +107,7 @@ i18n: bin/i18ndude ## Update locales
 # build:
 
 .PHONY: build-dev
-build-dev: instance/etc/zope.ini ## pip install Plone packages
+build-dev: ## pip install Plone packages
 	@echo "$(GREEN)==> Setup Build$(RESET)"
 	bin/mxdev -c mx.ini
 	bin/pip install -r requirements-mxdev.txt
