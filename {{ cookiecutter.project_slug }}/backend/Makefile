@@ -89,8 +89,9 @@ bin/pip:
 	$(PYTHON) -m venv .
 	bin/pip install -U "pip" "wheel" "cookiecutter" "mxdev"
 
-instance/etc/zope.ini:	bin/pip
-	@echo "$(GREEN)==> Install Plone and create instance$(RESET)"
+.PHONY: config
+config: bin/pip  ## Create instance configuration
+	@echo "$(GREEN)==> Create instance configuration$(RESET)"
 	bin/cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
 # i18n
@@ -107,7 +108,7 @@ i18n: bin/i18ndude ## Update locales
 # build:
 
 .PHONY: build-dev
-build-dev: ## pip install Plone packages
+build-dev: config ## pip install Plone packages
 	@echo "$(GREEN)==> Setup Build$(RESET)"
 	bin/mxdev -c mx.ini
 	bin/pip install -r requirements-mxdev.txt
