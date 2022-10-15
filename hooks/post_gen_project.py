@@ -264,13 +264,32 @@ def clean_up_backend_tests():
             sys.exit(1)
 
 
-def prepare_backend():
+def prepare_backend(python_package_name):
     """Apply black and isort to the generated codebase."""
     print("Backend codebase")
     # Clean up unused test folders
     clean_up_backend_tests()
     steps = [
-        ["Format generated code in the backend", ["make", "format"], False, "backend"]
+        [
+            "Create python package using plonecli",
+            [
+                "pipx run plonecli create --bobconfig=src/.mrbob.ini addon "
+                f" src/{python_package_name}"
+            ],
+            True,
+            "backend",
+        ],
+        [
+            "Use the plone_site_initialization template in plonecli to create"
+            " some defaults",
+            [
+                "pipx run plonecli add --bobconfig=../.mrbob.ini"
+                " site_initialization",
+            ],
+            True,
+            f"backend/src/{python_package_name}",
+        ],
+        ["Format generated code in the backend", ["make", "format"], False, "backend"],
     ]
     for step in steps:
         msg, command, shell, cwd = step
@@ -283,7 +302,7 @@ volto_version = "{{ cookiecutter.volto_version }}"
 volto_generator_version = "{{ cookiecutter.volto_generator_version }}"
 volto_addon_name = "{{ cookiecutter.volto_addon_name }}"
 description = "{{ cookiecutter.description }}"
-
+python_package_name = "{{ cookiecutter.python_package_name }}"
 
 def main():
     """Final fixes."""
@@ -298,7 +317,7 @@ def main():
     )
     print("")
     # Setup backend
-    prepare_backend()
+    prepare_backend(python_package_name=python_package_name)
     print("")
     print(f"{MSG_DELIMITER}")
     msg = dedent(
