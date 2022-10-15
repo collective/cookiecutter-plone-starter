@@ -1,0 +1,2 @@
+-c constraints.txt
+src/{{cookiecutter.python_package_name}}

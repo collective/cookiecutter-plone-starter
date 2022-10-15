@@ -82,8 +82,9 @@ jobs:
 
       - name: Install package
         run: |
-          pip install "plone.app.testing" -c https://dist.plone.org/release/{{"${{ matrix.plone }}"}}/constraints.txt
-          pip install -e "src/{{ cookiecutter.python_package_name }}[test]"
+          pip install mxdev
+          mxdev -c mx.ini
+          pip install -r requirements-mxdev.txt
 
       - name: Run tests
         run: |
