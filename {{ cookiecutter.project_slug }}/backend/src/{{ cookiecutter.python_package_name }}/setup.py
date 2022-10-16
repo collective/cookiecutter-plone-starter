@@ -47,7 +47,7 @@ setup(
         "setuptools",
         "Plone",
         "prettyconf",
-        "kitconcept.api",
+        "plone.api",
     ],
     extras_require={
         "test": [
