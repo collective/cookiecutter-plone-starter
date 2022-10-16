@@ -1,5 +1,5 @@
 """Setup tests for this package."""
-from kitconcept import api
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from {{ cookiecutter.python_package_name }}.testing import {{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING  # noqa: E501
