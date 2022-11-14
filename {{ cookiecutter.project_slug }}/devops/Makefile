@@ -20,8 +20,8 @@ ifndef DEPLOY_SCALES
 	DEPLOY_SCALES=2
 endif
 
-ifeq ($(DEPLOY_ENV), local)
-	CONTEXT=local
+ifeq ($(DEPLOY_ENV), dev)
+	CONTEXT=dev
 	CONTEXT_HOST=ssh://$(DEPLOY_USER)@$(DEPLOY_HOST):$(DEPLOY_PORT)
 else ifeq ($(DEPLOY_ENV), prod)
 	CONTEXT=prod
@@ -74,7 +74,7 @@ docker-setup:  ## Setup docker context
 
 .PHONY: destroy
 destroy: ## Destroy Vagrant box
-	if [ "$(DEPLOY_ENV)" = "local" ]; then \
+	if [ "$(DEPLOY_ENV)" = "dev" ]; then \
 		echo "$(GREEN)==> Destroy Vagrant box $(RESET)"; \
 		sudo vagrant destroy; \
 		sudo rm -Rf .vagrant_private_key .vagrant; \
@@ -83,7 +83,7 @@ destroy: ## Destroy Vagrant box
 
 .PHONY: provision
 provision: bin/ansible ## Provision Vagrant box
-	if [ "$(DEPLOY_ENV)" = "local" ]; then \
+	if [ "$(DEPLOY_ENV)" = "dev" ]; then \
 		echo "$(GREEN)==> Provision Vagrant box $(RESET)"; \
 		sudo vagrant up; \
 		sudo cp .vagrant/machines/default/virtualbox/private_key .vagrant_private_key; \
@@ -128,7 +128,7 @@ scale-services: ## Scale services
 
 .PHONY: all
 all: ## Create new box, run ansible, deploy stack
-	if [ "$(DEPLOY_ENV)" = "local" ]; then
+	if [ "$(DEPLOY_ENV)" = "dev" ]; then
 		$(MAKE) provision
 	fi
 	$(MAKE) run-playbook
