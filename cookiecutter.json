@@ -8,6 +8,7 @@
   "__python_package_name_upper": "{{ cookiecutter.python_package_name|upper }}",
   "plone_version": "{{ '6.0.0a4' | latest_plone }}",
   "volto_version": "{{ '16.0.0-alpha.6' | latest_volto }}",
+  "volto_generator_version": "{{ '5.9.3' | latest_volto_generator }}",
   "language_code": [
     "en",
     "de",
@@ -30,6 +31,7 @@
     "local_extensions.docker_image_prefix",
     "local_extensions.gs_language_code",
     "local_extensions.latest_volto",
+    "local_extensions.latest_volto_generator",
     "local_extensions.latest_plone"
   ]
 }
