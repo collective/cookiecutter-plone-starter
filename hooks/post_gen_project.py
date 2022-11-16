@@ -63,7 +63,9 @@ def run_cmd(command: str, shell: bool, cwd: str) -> bool:
     return False if proc.returncode else True
 
 
-def prepare_frontend(volto_version: str, description: str):
+def prepare_frontend(
+    volto_version: str, volto_generator_version: str, description: str
+):
     """Run volto generator."""
     print("Frontend codebase:")
     addons = " ".join([f"--addon {item}" for item in VOLTO_ADDONS])
@@ -72,9 +74,10 @@ def prepare_frontend(volto_version: str, description: str):
         if [x for x in ("alpha", "beta", "rc") if x in volto_version]
         else ""
     )
+    generator_version_literal = f"@plone/generator-volto@{volto_generator_version}"
     steps = [
         [
-            f"Install latest {_info('@plone/generator-volto')}",
+            f"Installing {_info(generator_version_literal)}",
             [
                 "npm",
                 "install",
@@ -82,7 +85,7 @@ def prepare_frontend(volto_version: str, description: str):
                 "--no-fund",
                 "-g",
                 "yo",
-                "@plone/generator-volto",
+                f"@plone/generator-volto@{volto_generator_version}",
             ],
             sys.platform.startswith("win"),
             "frontend",
@@ -132,12 +135,17 @@ def prepare_backend():
 
 
 volto_version = "{{ cookiecutter.volto_version }}"
+volto_generator_version = "{{ cookiecutter.volto_generator_version }}"
 description = "{{ cookiecutter.description }}"
 
 
 def main():
     """Final fixes."""
-    prepare_frontend(volto_version=volto_version, description=description)
+    prepare_frontend(
+        volto_version=volto_version,
+        volto_generator_version=volto_generator_version,
+        description=description,
+    )
     print("")
     prepare_backend()
     print(f"{MSG_DELIMITER}")

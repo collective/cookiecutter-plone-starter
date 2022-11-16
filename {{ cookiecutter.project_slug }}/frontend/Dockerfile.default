@@ -6,12 +6,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends $buildDeps \
     && rm -rf /var/lib/apt/lists/*
 
-COPY . /build/
-RUN chown -R node:node build
+COPY --chown=node . /build/
+RUN corepack enable
 
 USER node
 WORKDIR /build
-RUN yarn install \
+RUN yarn install --network-timeout 1000000 \
     && yarn build
 
 FROM base

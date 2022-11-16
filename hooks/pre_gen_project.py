@@ -245,6 +245,7 @@ def main():
             Summary:
               - Plone version: {_info('{{ cookiecutter.plone_version }}')}
               - Volto version: {_info('{{ cookiecutter.volto_version }}')}
+              - Volto Generator version: {_info('{{ cookiecutter.volto_generator_version }}')}
               - Output folder: {_info(output_path)}
         """
         )
