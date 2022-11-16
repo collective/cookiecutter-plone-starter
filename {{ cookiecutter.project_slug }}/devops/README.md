@@ -6,11 +6,11 @@
 #### For Local Deployment (Using Vagrant)
 
 ```shell
-source .env_local
+source .env_dev
 ```
 #### For Production
 
-Create `.env_prod`, if it does not exist, setting all values defined in `.env_local`, then:
+Create `.env_prod`, if it does not exist, setting all values defined in `.env_dev`, then:
 
 ```shell
 source .env_prod
