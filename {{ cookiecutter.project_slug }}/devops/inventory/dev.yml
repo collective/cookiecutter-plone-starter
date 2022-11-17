@@ -1,6 +1,6 @@
 ---
-# Local
-local:
+# Dev
+dev:
   hosts:
     {{ cookiecutter.project_slug }}-local:
       ansible_host: 127.0.0.1
