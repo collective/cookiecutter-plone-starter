@@ -21,7 +21,7 @@ def latest_volto(v) -> str:
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
     valid_versions = [v for v in versions if int(v.split(".")[0]) >= VOLTO_MIN_VERSION]
-    return sorted(valid_versions, reverse=True)[0]
+    return sorted(valid_versions, reverse=True, key=lambda v: ("-" not in v, v))[0]
 
 
 @simple_filter
@@ -34,7 +34,7 @@ def latest_volto_generator(v) -> str:
     valid_versions = [
         v for v in versions if int(v.split(".")[0]) >= VOLTO_GENERATOR_MIN_VERSION
     ]
-    return sorted(valid_versions, reverse=True)[0]
+    return sorted(valid_versions, reverse=True, key=lambda v: ("-" not in v, v))[0]
 
 
 @simple_filter
