@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG PLONE_VERSION={{ cookiecutter.plone_version }}
 FROM plone/plone-backend:${PLONE_VERSION}
 
