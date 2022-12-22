@@ -2,22 +2,18 @@
 FROM node:16-slim as base
 FROM base as builder
 
-RUN <<EOT
-    apt-get update
-    buildDeps="python3 build-essential git ca-certificates"
-    apt-get install -y --no-install-recommends $buildDeps
-    rm -rf /var/lib/apt/lists/*
-EOT
+RUN apt-get update \
+    && buildDeps="python3 build-essential git ca-certificates" \
+    && apt-get install -y --no-install-recommends $buildDeps \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --chown=node . /build/
 RUN corepack enable
 
 USER node
 WORKDIR /build
-RUN <<EOT
-    make install
-    yarn build
-EOT
+RUN make install \
+    && yarn build
 
 FROM base
 
@@ -26,13 +22,11 @@ LABEL maintainer="{{ cookiecutter.author }} <{{ cookiecutter.email }}>" \
       org.label-schema.description="{{ cookiecutter.project_title }} frontend image." \
       org.label-schema.vendor="{{ cookiecutter.author }}"
 
-RUN <<<EOT
-    apt-get update
-    buildDeps="busybox"
-    apt-get install -y --no-install-recommends $buildDeps
-    busybox --install -s
-    rm -rf /var/lib/apt/lists/*
-EOT
+RUN apt-get update \
+    && buildDeps="busybox" \
+    && apt-get install -y --no-install-recommends $buildDeps \
+    && busybox --install -s \
+    && rm -rf /var/lib/apt/lists/*
 
 
 USER node
