@@ -163,4 +163,4 @@ debug: instance/etc/zope.ini ## Run debug console
 
 .PHONY: build-image
 build-image:  ## Build Docker Image
-	@docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile --build-arg PLONE_VERSION=$(PLONE_VERSION)
+	DOCKER_BUILDKIT=1 @docker build  . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile --build-arg PLONE_VERSION=$(PLONE_VERSION)
