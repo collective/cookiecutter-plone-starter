@@ -26,7 +26,7 @@ LABEL maintainer="{{ cookiecutter.author }} <{{ cookiecutter.email }}>" \
       org.label-schema.description="{{ cookiecutter.project_title }} frontend image." \
       org.label-schema.vendor="{{ cookiecutter.author }}"
 
-RUN <<<EOT
+RUN <<EOT
     apt-get update
     buildDeps="busybox"
     apt-get install -y --no-install-recommends $buildDeps
