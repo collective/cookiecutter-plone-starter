@@ -11,7 +11,7 @@
 
 ### Development Setup
 
-- Python 3.9
+- Python 3.9, 3.10, 3.11
 - Node 16
 - yarn
 - Docker

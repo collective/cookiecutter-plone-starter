@@ -13,7 +13,7 @@ This framework relies on [volto-generator](https://github.com/plone/volto/tree/m
 ## Features
 
 - For Plone 6
-- Works with Python 3.9
+- Works with Python 3.8, 3.9, 3.10, 3.11
 
 
 ## Requirements
