@@ -115,7 +115,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable={{ "${{ is_default_branch }}" }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
