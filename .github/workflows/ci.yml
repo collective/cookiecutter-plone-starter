@@ -21,6 +21,16 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v3
 
+      # Use node 16
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Install yo
+      - name: Install yo
+        run: |
+          npm install -g yo
+
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
