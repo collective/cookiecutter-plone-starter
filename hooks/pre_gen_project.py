@@ -48,6 +48,7 @@ SUPPORTED_PYTHON_VERSIONS = [
 
 SUPPORTED_NODE_VERSION = [
     "16",
+    "18",
 ]
 
 
