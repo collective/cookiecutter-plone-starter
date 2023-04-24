@@ -65,7 +65,7 @@ services:
       - backend
     networks:
       - nw-public
-      - backend
+      - nw-data
     deploy:
       replicas: 2
       labels:
