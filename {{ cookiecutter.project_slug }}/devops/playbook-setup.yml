@@ -43,7 +43,7 @@
 
       - name: Create a network
         community.docker.docker_network:
-          name: traefik-public
+          name: nw-public
           driver: overlay
 
       - name: Create Traefik folders
