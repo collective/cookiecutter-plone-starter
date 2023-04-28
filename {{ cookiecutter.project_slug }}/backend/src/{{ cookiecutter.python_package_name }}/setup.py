@@ -1,15 +1,14 @@
 """Installer for the {{ cookiecutter.python_package_name }} package."""
+from pathlib import Path
 from setuptools import find_packages
 from setuptools import setup
 
 
-long_description = "\n\n".join(
-    [
-        open("README.md").read(),
-        open("CONTRIBUTORS.md").read(),
-        open("CHANGES.md").read(),
-    ]
-)
+long_description = f"""
+{Path("README.md").read_text()}\n
+{Path("CONTRIBUTORS.md").read_text()}\n
+{Path("CHANGES.md").read_text()}\n
+"""
 
 
 setup(
@@ -25,6 +24,8 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
@@ -47,7 +48,7 @@ setup(
         "setuptools",
         "Plone",
         "prettyconf",
-        "kitconcept.api",
+        "plone.api",
     ],
     extras_require={
         "test": [

@@ -1,6 +1,6 @@
 from DateTime import DateTime
 from dateutil.parser import parse
-from kitconcept import api
+from plone import api
 from plone.app.dexterity.behaviors import constrains
 from plone.namedfile.file import NamedBlobImage
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes

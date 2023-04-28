@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run check
         uses: plone/code-analysis-action@v2
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run check
         uses: plone/code-analysis-action@v2
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run check
         uses: plone/code-analysis-action@v2
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run check
         uses: plone/code-analysis-action@v2
@@ -63,7 +63,7 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - 3.9
+          - 3.11
         plone:
           - "{{ cookiecutter.plone_version }}"
 
@@ -72,18 +72,19 @@ jobs:
         working-directory: ./backend
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Plone {{"${{ matrix.plone }}"}} with Python {{"${{ matrix.python }}"}}
-        uses: plone/setup-plone@v1.0.0
+        uses: plone/setup-plone@v2.0.0
         with:
           python-version: ${{"{{ matrix.python }}"}}
           plone-version: ${{"{{ matrix.plone }}"}}
 
       - name: Install package
         run: |
-          pip install "plone.app.testing" -c https://dist.plone.org/release/{{"${{ matrix.plone }}"}}/constraints.txt
-          pip install -e "src/{{ cookiecutter.python_package_name }}[test]"
+          pip install mxdev
+          mxdev -c mx.ini
+          pip install -r requirements-mxdev.txt
 
       - name: Run tests
         run: |
@@ -96,29 +97,31 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: |
             {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-backend
           labels: |
             org.label-schema.docker.cmd=docker run -d -p 8080:8080 {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization}}/{{ cookiecutter.project_slug }}-backend:latest
+          flavor:
+            latest=false
           tags: |
             type=ref,event=branch
             type=sha
-            type=raw,value=latest,enable=${{"{{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}"}}
+            type=raw,value=latest,enable={{ "{{is_default_branch}}" }}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           {%- if cookiecutter.container_registry == 'Docker Hub' %}
           username: {{"${{ secrets.DOCKERHUB_USERNAME }}"}}
@@ -131,7 +134,7 @@ jobs:
           {%- endif %}
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
           context: backend

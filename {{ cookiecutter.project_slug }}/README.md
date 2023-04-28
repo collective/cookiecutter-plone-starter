@@ -11,7 +11,7 @@
 
 ### Development Setup
 
-- Python 3.9
+- Python 3.9, 3.10, 3.11
 - Node 16
 - yarn
 - Docker
@@ -42,8 +42,8 @@ make start-frontend
 
 This monorepo is composed by two distinct codebases: api and frontend.
 
-- **backend**: API (Backend) Plone installation using pip (not buildout). Includes a policy package named dlr.internet
-- **frontend**: React (Volto) package named dlr-internet
+- **backend**: API (Backend) Plone installation using pip (not buildout). Includes a policy package named {{ cookiecutter.python_package_name }}
+- **frontend**: React (Volto) package named frontend
 
 ### Reasoning
 

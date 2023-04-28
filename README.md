@@ -13,7 +13,7 @@ This framework relies on [volto-generator](https://github.com/plone/volto/tree/m
 ## Features
 
 - For Plone 6
-- Works with Python 3.9
+- Works with Python 3.8, 3.9, 3.10, 3.11
 
 
 ## Requirements
@@ -101,8 +101,8 @@ These are all the template options that will be prompted by the [Cookiecutter CL
 | `author`              | This is you! The value goes into places like ``LICENSE``, ``setup.py`` and such.                                                                     | **Our Company**               |
 | `email`               | The email address you want to identify yourself in the project.                                                                                      | **email@example.com**         |
 | `python_package_name` | Name of the Python package used to configure your project. It needs to be Python-importable, so no dashes, spaces or special characters are allowed. | **plone_site**                |
-| `plone_version`       | Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value.                         | **6.0.0b2**                   |
-| `volto_version`       | Volto (Plone Frontend) version to be used. This queries for the latest available stable Volto version and presents it to you as the default value.   | **16.0.0-alpha.35**           |
+| `plone_version`       | Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value.                         | **6.0.0**                     |
+| `volto_version`       | Volto (Plone Frontend) version to be used. This queries for the latest available stable Volto version and presents it to you as the default value.   | **16.4.1**                    |
 | `language_code`       | Language to be used on the site.                                                                                                                     | **pt-br**                     |
 | `github_organization` | Used for GitHub and Docker repositories.                                                                                                             | **collective**                |
 | `container_registry`  | Container registry to be used.                                                                                                                       | **Docker Hub**                |

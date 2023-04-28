@@ -42,11 +42,13 @@ SUPPORTED_PYTHON_VERSIONS = [
     "3.8",
     "3.9",
     "3.10",
+    "3.11",
 ]
 
 
 SUPPORTED_NODE_VERSION = [
     "16",
+    "18",
 ]
 
 
@@ -245,6 +247,7 @@ def main():
             Summary:
               - Plone version: {_info('{{ cookiecutter.plone_version }}')}
               - Volto version: {_info('{{ cookiecutter.volto_version }}')}
+              - Volto Generator version: {_info('{{ cookiecutter.volto_generator_version }}')}
               - Output folder: {_info(output_path)}
         """
         )

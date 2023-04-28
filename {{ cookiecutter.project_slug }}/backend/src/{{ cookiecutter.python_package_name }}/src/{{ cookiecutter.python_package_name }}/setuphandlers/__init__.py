@@ -1,4 +1,4 @@
-from kitconcept import api
+from plone import api
 from {{ cookiecutter.python_package_name }} import logger
 from {{ cookiecutter.python_package_name }}.setuphandlers import content
 from {{ cookiecutter.python_package_name }}.setuphandlers import users
