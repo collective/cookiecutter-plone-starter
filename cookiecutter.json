@@ -17,8 +17,8 @@
   ],
   "github_organization": "collective",
   "container_registry": [
-    "Docker Hub",
-    "GitHub"
+    "GitHub",
+    "Docker Hub"
   ],
   "__docker_image_prefix": "{{ cookiecutter.container_registry | docker_image_prefix }}",
   "__profile_version": "{% now 'utc', '%Y%m%d001' %}",
