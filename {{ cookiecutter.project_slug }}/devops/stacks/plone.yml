@@ -11,7 +11,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
+        - traefik.docker.network=nw-webserver
         - traefik.constraint-label=traefik-public
         - traefik.http.middlewares.admin-auth.basicauth.users=${TRAEFIK_AUTH_USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
         - traefik.http.routers.traefik-public-https.rule=Host(`${TRAEFIK_FQDN?Variable TRAEFIK_FQDN not set}`)
@@ -55,7 +55,7 @@ services:
       - --api
 
     networks:
-      - nw-public
+      - nw-webserver
 
   frontend:
     image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
@@ -64,13 +64,13 @@ services:
     depends_on:
       - backend
     networks:
-      - nw-public
-      - backend
+      - nw-webserver
+      - nw-data
     deploy:
       replicas: 2
       labels:
         - traefik.enable=true
-        - traefik.docker.network=nw-public
+        - traefik.docker.network=nw-webserver
         - traefik.constraint-label=traefik-public
         # Service
         - traefik.http.services.svc-frontend.loadbalancer.server.port=3000
@@ -91,13 +91,13 @@ services:
     depends_on:
       - db
     networks:
-      - nw-public
+      - nw-webserver
       - nw-data
     deploy:
       replicas: 2
       labels:
         - traefik.enable=true
-        - traefik.docker.network=nw-public
+        - traefik.docker.network=nw-webserver
         - traefik.constraint-label=traefik-public
         # Services
         - traefik.http.services.svc-backend.loadbalancer.server.port=8080
@@ -161,7 +161,7 @@ volumes:
       o: bind
 
 networks:
-  nw-public:
+  nw-webserver:
     external: true
     driver: overlay
   nw-data:
