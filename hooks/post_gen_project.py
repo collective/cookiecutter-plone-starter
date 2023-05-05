@@ -56,10 +56,10 @@ VOLTO_ADDONS = [
 def run_cmd(command: str, shell: bool, cwd: str) -> bool:
     proc = subprocess.run(command, shell=shell, cwd=cwd, capture_output=True)
     if proc.returncode:
-        # Create log on the folder containing the project
-        log_file = Path("../plone_starter_error.log").resolve()
-        log_file.write_bytes(proc.stderr)
-        print(_error(f"There was an error, see {log_file} for details"))
+        # Write errors to the main process stderr
+        print(_error(f"\nError while running {command}:"), file=sys.stderr)
+        sys.stderr.buffer.write(proc.stderr)
+        print("\n", file=sys.stderr)
     return False if proc.returncode else True
 
 
