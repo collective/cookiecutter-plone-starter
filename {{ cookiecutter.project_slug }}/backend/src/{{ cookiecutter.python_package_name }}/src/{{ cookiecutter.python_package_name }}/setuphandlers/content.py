@@ -85,6 +85,10 @@ def populate_portal(portal, creators):
         for item in contents:
             _create_content(portal, item, creators)
 
+    # Update workflow security
+    wf_tool = api.portal.get_tool("portal_workflow")
+    wf_tool.updateRoleMappings()
+
 
 def _update_home(portal, item: dict):
     """Update front page."""
