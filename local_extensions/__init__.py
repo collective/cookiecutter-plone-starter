@@ -1,3 +1,4 @@
+import os
 import re
 
 import requests
@@ -11,6 +12,15 @@ REGISTRIES = {
 
 VOLTO_MIN_VERSION = 16
 VOLTO_GENERATOR_MIN_VERSION = 6
+VOLTO_ALPHA = True if os.environ.get("USE_VOLTO_ALPHA") else False
+
+
+def latest_volto_version(versions, min_version):
+    valid = sorted(
+        [v for v in versions if int(v.split(".")[0]) >= min_version], reverse=True
+    )
+    valid = valid if VOLTO_ALPHA else [v for v in valid if "-" not in v]
+    return valid[0]
 
 
 @simple_filter
@@ -20,8 +30,7 @@ def latest_volto(v) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    valid_versions = [v for v in versions if int(v.split(".")[0]) >= VOLTO_MIN_VERSION]
-    return sorted(valid_versions, reverse=True, key=lambda v: ("-" not in v, v))[0]
+    return latest_volto_version(versions, VOLTO_MIN_VERSION)
 
 
 @simple_filter
@@ -31,10 +40,7 @@ def latest_volto_generator(v) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    valid_versions = [
-        v for v in versions if int(v.split(".")[0]) >= VOLTO_GENERATOR_MIN_VERSION
-    ]
-    return sorted(valid_versions, reverse=True, key=lambda v: ("-" not in v, v))[0]
+    return latest_volto_version(versions, VOLTO_GENERATOR_MIN_VERSION)
 
 
 @simple_filter

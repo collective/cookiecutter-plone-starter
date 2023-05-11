@@ -91,7 +91,7 @@ make start-frontend
 
 ## Project Generation Options
 
-These are all the template options that will be prompted by the [Cookiecutter CLI](https://github.com/cookiecutter/cookiecutter) prior to generating your project.
+These are all the template options that will be prompted by the [Cookiecutter CLI](https://github.com/cookiecutter/cookiecutter) before generating your project.
 
 | Option                | Description                                                                                                                                          | Example                       |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
@@ -102,7 +102,8 @@ These are all the template options that will be prompted by the [Cookiecutter CL
 | `email`               | The email address you want to identify yourself in the project.                                                                                      | **email@example.com**         |
 | `python_package_name` | Name of the Python package used to configure your project. It needs to be Python-importable, so no dashes, spaces or special characters are allowed. | **plone_site**                |
 | `plone_version`       | Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value.                         | **6.0.0**                     |
-| `volto_version`       | Volto (Plone Frontend) version to be used. This queries for the latest available stable Volto version and presents it to you as the default value.   | **16.4.1**                    |
+| `volto_version`       | Volto (Plone Frontend) version to be used. This queries for the latest available Volto version and presents it to you as the default value. If you want to use non-stable versions, set the `USE_VOLTO_ALPHA` environment variable. | **16.4.1**                    |
+| `volto_generator_version`       | Volto (Plone Frontend) Yeoman generator to be used. This queries for the latest available Volto Generator version and presents it to you as the default value. If you want to use non-stable versions, set the `USE_VOLTO_ALPHA` environment variable.   | **6.0.0**                    |
 | `language_code`       | Language to be used on the site.                                                                                                                     | **pt-br**                     |
 | `github_organization` | Used for GitHub and Docker repositories.                                                                                                             | **collective**                |
 | `container_registry`  | Container registry to be used.                                                                                                                       | **GitHub**                    |
