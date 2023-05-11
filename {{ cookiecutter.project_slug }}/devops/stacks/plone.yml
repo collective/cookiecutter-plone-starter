@@ -130,7 +130,7 @@ services:
         - traefik.http.routers.rt-backend-classic.entrypoints=https
         - traefik.http.routers.rt-backend-classic.tls=true
         - traefik.http.routers.rt-backend-classic.service=svc-backend
-        - traefik.http.routers.backend-classic.middlewares=gzip,mw-backend-auth,mw-backend-vhm-classic
+        - traefik.http.routers.rt-backend-classic.middlewares=gzip,mw-backend-auth,mw-backend-vhm-classic
 
   db:
     image: postgres:14.2
