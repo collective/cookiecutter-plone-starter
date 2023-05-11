@@ -5,6 +5,10 @@
   "author": "Plone Foundation",
   "email": "collective@plone.org",
   "python_package_name": "{{ cookiecutter.project_slug|replace(' ', '')|replace('-', '_')|replace('.', '') }}",
+  "python_test_framework": [
+    "pytest",
+    "unittest"
+  ],
   "__python_package_name_upper": "{{ cookiecutter.python_package_name|upper }}",
   "plone_version": "{{ '6.0.0rc1' | latest_plone }}",
   "volto_version": "{{ '16.0.0' | latest_volto }}",

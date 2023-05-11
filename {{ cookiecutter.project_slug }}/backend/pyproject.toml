@@ -1,3 +1,8 @@
+{%- if cookiecutter.python_test_framework == 'pytest' %}
+[tool.pytest.ini_options]
+addopts = "--cov-report term --cov={{ cookiecutter.python_package_name }}"
+
+{%- endif %}
 [tool.black]
 line-length = 88
 target-version = ['py38']

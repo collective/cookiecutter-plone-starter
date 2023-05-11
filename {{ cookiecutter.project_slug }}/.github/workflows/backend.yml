@@ -88,7 +88,12 @@ jobs:
 
       - name: Run tests
         run: |
+          {%- if cookiecutter.python_test_framework == 'pytest' %}
+          pytest --disable-warnings src/{{ cookiecutter.python_package_name }}/tests
+          {%- endif %}
+          {%- if cookiecutter.python_test_framework != 'pytest' %}
           PYTHONWARNINGS=ignore zope-testrunner --auto-color --auto-progress --test-path src/{{ cookiecutter.python_package_name }}/src/
+          {%- endif %}
 
   release:
     runs-on: ubuntu-latest

@@ -143,11 +143,22 @@ lint-zpretty: ## validate ZCML/XML using zpretty
 
 .PHONY: test
 test: ## run tests
+	{%- if cookiecutter.python_test_framework == 'pytest' %}
+	bin/pytest src/{{ cookiecutter.python_package_name }}/tests
+	{%- endif %}
+	{%- if cookiecutter.python_test_framework != 'pytest' %}
 	./bin/zope-testrunner --auto-color --auto-progress --test-path src/{{ cookiecutter.python_package_name }}/src/
+	{%- endif %}
+
 
 .PHONY: test_quiet
 test_quiet: ## run tests removing deprecation warnings
+	{%- if cookiecutter.python_test_framework == 'pytest' %}
+	bin/pytest --disable-warnings src/{{ cookiecutter.python_package_name }}/tests
+	{%- endif %}
+	{%- if cookiecutter.python_test_framework != 'pytest' %}
 	PYTHONWARNINGS=ignore ./bin/zope-testrunner --auto-color --auto-progress --test-path src/{{ cookiecutter.python_package_name }}/src/
+	{%- endif %}
 
 .PHONY: create-site
 create-site: instance/etc/zope.ini ## Create a new site from scratch
