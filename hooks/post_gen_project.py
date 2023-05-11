@@ -120,9 +120,32 @@ def prepare_frontend(
         fh.write(new_data)
 
 
+PYTHON_TEST_PATHS_TO_REMOVE = {
+    "pytest": [
+        "src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/tests"
+    ],
+    "unittest": ["src/{{ cookiecutter.python_package_name }}/tests"],
+}
+
+
+def clean_up_backend_tests():
+    folders = PYTHON_TEST_PATHS_TO_REMOVE["{{ cookiecutter.python_test_framework }}"]
+    for folder in folders:
+        msg = f"Remove folder {folder} not used by {{ cookiecutter.python_test_framework }}"
+        command = ["rm", "-Rf", folder]
+        shell = False
+        cwd = "backend"
+        print(f" - {msg}")
+        result = run_cmd(command, shell=shell, cwd=cwd)
+        if not result:
+            sys.exit(1)
+
+
 def prepare_backend():
     """Apply black and isort to the generated codebase."""
     print("Backend codebase")
+    # Clean up unused test folders
+    clean_up_backend_tests()
     steps = [
         ["Format generated code in the backend", ["make", "format"], False, "backend"]
     ]
