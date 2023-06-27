@@ -12,14 +12,14 @@ REGISTRIES = {
 
 VOLTO_MIN_VERSION = 16
 VOLTO_GENERATOR_MIN_VERSION = 6
-VOLTO_ALPHA = True if os.environ.get("USE_VOLTO_ALPHA") else False
 
 
-def latest_volto_version(versions, min_version):
+def latest_version(versions, min_version, include_alphas=False):
     valid = sorted(
         [v for v in versions if int(v.split(".")[0]) >= min_version], reverse=True
     )
-    valid = valid if VOLTO_ALPHA else [v for v in valid if "-" not in v]
+    if not include_alphas:
+        valid = [v for v in valid if "-" not in v]
     return valid[0]
 
 
@@ -30,17 +30,17 @@ def latest_volto(v) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_volto_version(versions, VOLTO_MIN_VERSION)
+    return latest_version(versions, VOLTO_MIN_VERSION, include_alphas="USE_VOLTO_ALPHA" in os.environ)
 
 
 @simple_filter
-def latest_volto_generator(v) -> str:
+def latest_volto_generator(volto_version) -> str:
     """Return the latest volto generator version."""
     url: str = "https://registry.npmjs.org/@plone/generator-volto"
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_volto_version(versions, VOLTO_GENERATOR_MIN_VERSION)
+    return latest_version(versions, VOLTO_GENERATOR_MIN_VERSION, include_alphas='-' in volto_version)
 
 
 @simple_filter
