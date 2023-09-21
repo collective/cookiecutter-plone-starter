@@ -47,6 +47,12 @@ Generate a new Plone 6 Project:
 pipx run cookiecutter gh:collective/cookiecutter-plone-starter
 ```
 
+To use alpha versions of Volto and its generator, set the `USE_VOLTO_ALPHA` environment variable:
+
+```shell
+USE_VOLTO_ALPHA=1 pipx run cookiecutter gh:collective/cookiecutter-plone-starter
+```
+
 `Cookiecutter` generates a file structure.
 
 For an initial build of backend and frontend:
