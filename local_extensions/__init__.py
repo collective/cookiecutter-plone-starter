@@ -13,6 +13,13 @@ REGISTRIES = {
 VOLTO_MIN_VERSION = 16
 VOLTO_GENERATOR_MIN_VERSION = 6
 
+DEFAULT_NODE = "18"
+
+VOLTO_NODE = {
+    16: 16,
+    17: DEFAULT_NODE,
+}
+
 
 def latest_version(versions, min_version, include_alphas=False):
     valid = sorted(
@@ -30,7 +37,9 @@ def latest_volto(v) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_version(versions, VOLTO_MIN_VERSION, include_alphas="USE_VOLTO_ALPHA" in os.environ)
+    return latest_version(
+        versions, VOLTO_MIN_VERSION, include_alphas="USE_VOLTO_ALPHA" in os.environ
+    )
 
 
 @simple_filter
@@ -40,7 +49,9 @@ def latest_volto_generator(volto_version) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_version(versions, VOLTO_GENERATOR_MIN_VERSION, include_alphas='-' in volto_version)
+    return latest_version(
+        versions, VOLTO_GENERATOR_MIN_VERSION, include_alphas="-" in volto_version
+    )
 
 
 @simple_filter
@@ -50,6 +61,13 @@ def latest_plone(v) -> str:
     resp = requests.get(url)
     data = resp.content.decode("utf-8")
     return re.search("\nPlone==(.*)\n", data).groups()[0]
+
+
+@simple_filter
+def node_version(volto_version: str) -> int:
+    """Return the Node Version to be used."""
+    major = int(volto_version.split(".")[0])
+    return VOLTO_NODE.get(major, DEFAULT_NODE)
 
 
 @simple_filter
@@ -63,6 +81,23 @@ def gs_language_code(code: str) -> str:
 
 
 @simple_filter
+def locales_language_code(code: str) -> str:
+    """Return the language code as expected by gettext."""
+    gs_code = code.lower()
+    if "-" in code:
+        base_language, country = code.split("-")
+        gs_code = f"{base_language}_{country.upper()}"
+    return gs_code
+
+
+@simple_filter
 def docker_image_prefix(registry: str) -> str:
     """Return the a prefix to be used with all Docker images."""
     return REGISTRIES.get(registry, "")
+
+
+@simple_filter
+def pascal_case(package_name: str) -> str:
+    """Return the package name as a string in the PascalCase format ."""
+    parts = [name.title() for name in package_name.split("_")]
+    return "".join(parts)

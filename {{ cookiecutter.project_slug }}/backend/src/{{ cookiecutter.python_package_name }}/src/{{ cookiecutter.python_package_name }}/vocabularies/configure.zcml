@@ -2,7 +2,7 @@
 
   <!-- Example vocabulary
   <utility
-      name="{{ cookiecutter.python_package_name }}.vocabulary.industries"
+      name="{{ cookiecutter.python_package_name }}.vocabulary.vocabulary"
       component=".industries_vocabulary"
       />
    -->

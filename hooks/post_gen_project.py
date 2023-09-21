@@ -47,7 +47,6 @@ VOLTO_CONFIG = """
 
 VOLTO_ADDONS = [
     "@eeacms/volto-accordion-block",
-    "@kitconcept/volto-blocks-grid",
     "@kitconcept/volto-slider-block",
     "@eeacms/volto-matomo",
 ]
@@ -64,7 +63,10 @@ def run_cmd(command: str, shell: bool, cwd: str) -> bool:
 
 
 def prepare_frontend(
-    volto_version: str, volto_generator_version: str, description: str
+    volto_version: str,
+    volto_generator_version: str,
+    description: str,
+    volto_addon_name: str,
 ):
     """Run volto generator."""
     print("Frontend codebase:")
@@ -94,6 +96,12 @@ def prepare_frontend(
             f"Generate frontend application with @plone/volto {_info(volto_version)}",
             f"yo @plone/volto frontend --description '{description}' {addons} "
             f"--skip-install --no-interactive --volto={volto_version}{canary}",
+            True,
+            "frontend",
+        ],
+        [
+            f"Generate addon {volto_addon_name}",
+            f"yo @plone/volto:addon {volto_addon_name} --interactive false --skip-install",
             True,
             "frontend",
         ],
@@ -159,6 +167,7 @@ def prepare_backend():
 
 volto_version = "{{ cookiecutter.volto_version }}"
 volto_generator_version = "{{ cookiecutter.volto_generator_version }}"
+volto_addon_name = "{{ cookiecutter.volto_addon_name }}"
 description = "{{ cookiecutter.description }}"
 
 
@@ -168,6 +177,7 @@ def main():
         volto_version=volto_version,
         volto_generator_version=volto_generator_version,
         description=description,
+        volto_addon_name=volto_addon_name,
     )
     print("")
     prepare_backend()

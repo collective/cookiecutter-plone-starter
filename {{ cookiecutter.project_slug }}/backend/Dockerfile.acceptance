@@ -9,8 +9,10 @@ COPY . .
 
 # Install local requirements and pre-compile mo files
 RUN <<EOT
+    set -e
     bin/pip install mxdev
     mv requirements-docker.txt requirements.txt
+    sed -i 's/-e src\/{{cookiecutter.python_package_name}}\[test\]/src\/{{cookiecutter.python_package_name}}/g' mx.ini
     bin/mxdev -c mx.ini
     bin/pip install -r requirements-mxdev.txt
     bin/pip install plone.app.robotframework>=2.0.0

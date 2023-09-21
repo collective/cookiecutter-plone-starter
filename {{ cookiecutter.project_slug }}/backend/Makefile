@@ -15,11 +15,11 @@ GREEN=`tput setaf 2`
 RESET=`tput sgr0`
 YELLOW=`tput setaf 3`
 
-PLONE_VERSION={{ cookiecutter.plone_version }}
-
 BACKEND_FOLDER=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-CODE_QUALITY_VERSION=2.0.2
+PLONE_VERSION=$$(cat version.txt)
+
+CODE_QUALITY_VERSION=2.1
 ifndef LOG_LEVEL
 	LOG_LEVEL=INFO
 endif

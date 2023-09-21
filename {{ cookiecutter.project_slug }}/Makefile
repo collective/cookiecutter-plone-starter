@@ -10,6 +10,7 @@ MAKEFLAGS+=--no-builtin-rules
 
 CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+PROJECT_NAME={{ cookiecutter.project_slug }}
 
 # We like colors
 # From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
@@ -115,15 +116,21 @@ build-images:  ## Build docker images
 	$(MAKE) -C "./frontend/" build-image
 
 ## Docker stack
-.PHONY: start-stack
-start-stack:  ## Start local stack
+.PHONY: stack-start
+stack-start:  ## Start local stack
 	@echo "Start local Docker stack"
-	@docker-compose -f devops/stacks/docker-compose-local.yml up -d --build
+	@docker-compose -f docker-compose.yml up -d --build
+	@echo "http://{{ cookiecutter.project_slug }}.localhost"
 
-.PHONY: stop-stack
-stop-stack:  ## Stop local stack
+.PHONY: start-stack
+stack-create-site:  ## Create a new site
+	@echo "Create a new site in the local Docker stack"
+	@docker-compose -f docker-compose.yml exec backend ./docker-entrypoint.sh create-site
+
+.PHONY: stack-stop
+stack-stop:  ## Stop local stack
 	@echo "Stop local Docker stack"
-	@docker-compose -f devops/stacks/docker-compose-local.yml down
+	@docker-compose -f docker-compose.yml down
 
 ## Acceptance
 .PHONY: build-acceptance-servers
