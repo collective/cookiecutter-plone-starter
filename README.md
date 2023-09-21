@@ -18,19 +18,21 @@ This framework relies on [volto-generator](https://github.com/plone/volto/tree/m
 
 ## Requirements
 
-### Cookiecutter
+### pipx
 
-Install `cookiecutter` command line:
+`pipx` is a tool to help you install and run end-user applications written in Python. It's roughly similar to macOS's `brew`, JavaScript's `npx`, and Linux's `apt`.
+
+To install [`pipx`](https://pypa.github.io/pipx/) on your default Python, use `pip`:
 
 ```shell
-pip install cookiecutter
+pip install pipx
 ```
 
 ### NodeJS & Yarn
 
-First install `nvm` and latest `NodeJS` according to the [Plone documentation](https://6.dev-docs.plone.org/volto/getting-started/install.html#install-nvm-nodejs-version-manager).
+First install `nvm` and latest `NodeJS` according to the [Plone documentation](https://6.docs.plone.org/volto/getting-started/install.html#install-nvm-nodejs-version-manager).
 
-After that, install `yarn` according to the [Plone documentation](https://6.dev-docs.plone.org/volto/getting-started/install.html#yarn-nodejs-package-manager)
+After that, install `yarn` according to the [Plone documentation](https://6.docs.plone.org/volto/getting-started/install.html#yarn-nodejs-package-manager)
 
 ### Docker
 
@@ -42,7 +44,7 @@ Install `Docker` according to the [official documentation](https://docs.docker.c
 Generate a new Plone 6 Project:
 
 ```shell
-cookiecutter gh:collective/cookiecutter-plone-starter
+pipx run cookiecutter gh:collective/cookiecutter-plone-starter
 ```
 
 `Cookiecutter` generates a file structure.
@@ -87,8 +89,6 @@ make start-backend
 make start-frontend
 ```
 
-
-
 ## Project Generation Options
 
 These are all the template options that will be prompted by the [Cookiecutter CLI](https://github.com/cookiecutter/cookiecutter) before generating your project.
@@ -101,6 +101,7 @@ These are all the template options that will be prompted by the [Cookiecutter CL
 | `author`              | This is you! The value goes into places like ``LICENSE``, ``setup.py`` and such.                                                                     | **Our Company**               |
 | `email`               | The email address you want to identify yourself in the project.                                                                                      | **email@example.com**         |
 | `python_package_name` | Name of the Python package used to configure your project. It needs to be Python-importable, so no dashes, spaces or special characters are allowed. | **plone_site**                |
+| `volto_addon_name` | Name of the Volto addon package used to configure your frontend project. No spaces or special characters are allowed. | **volto-plone-site**                |
 | `python_test_framework` | Select which Python testing framework to use in the project | **pytest**                |
 | `plone_version`       | Plone version to be used. This queries for the latest available Plone 6 version and presents it to you as the default value.                         | **6.0.0**                     |
 | `volto_version`       | Volto (Plone Frontend) version to be used. This queries for the latest available Volto version and presents it to you as the default value. If you want to use non-stable versions, set the `USE_VOLTO_ALPHA` environment variable. | **16.4.1**                    |
