@@ -2,7 +2,7 @@
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
-from {{ cookiecutter.python_package_name }}.testing import {{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING
+from {{ cookiecutter.python_package_name }}.testing import INTEGRATION_TESTING
 from Products.CMFPlone.utils import get_installer
 
 import unittest
@@ -11,7 +11,7 @@ import unittest
 class TestSetup(unittest.TestCase):
     """Test that {{ cookiecutter.python_package_name }} is properly installed."""
 
-    layer = {{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING
+    layer = INTEGRATION_TESTING
 
     def setUp(self):
         """Custom shared utility setup for tests."""

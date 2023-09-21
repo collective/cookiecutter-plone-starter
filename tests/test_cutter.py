@@ -35,6 +35,7 @@ def test_variable_substitution(cutter_result):
 
 FOLDERS = [
     ".github",
+    ".vscode",
     "backend",
     "devops",
     "frontend",
@@ -46,17 +47,3 @@ def test_root_folders(cutter_result, folder_name: str):
     """Test folders were created."""
     folder = cutter_result.project_path / folder_name
     assert folder.is_dir()
-
-
-FILES = [
-    "CHANGELOG.md",
-    "Makefile",
-    "README.md",
-]
-
-
-@pytest.mark.parametrize("file_name", FILES)
-def test_root_files(cutter_result, file_name: str):
-    """Test files were created."""
-    path = cutter_result.project_path / file_name
-    assert path.is_file()

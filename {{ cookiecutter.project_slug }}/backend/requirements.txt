@@ -1,8 +1,3 @@
 -c constraints.txt
--e src/{{cookiecutter.python_package_name}}[test]
 
 zope.testrunner
-
-# Add required add-ons
-# (Ideally add them in setup.py for {{cookiecutter.python_package_name}})
-# collective.easyform

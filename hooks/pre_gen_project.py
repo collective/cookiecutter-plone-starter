@@ -49,6 +49,7 @@ SUPPORTED_PYTHON_VERSIONS = [
 SUPPORTED_NODE_VERSION = [
     "16",
     "18",
+    "20",
 ]
 
 
@@ -64,6 +65,7 @@ context = {
     "author": "{{ cookiecutter.author }}",
     "email": "{{ cookiecutter.email }}",
     "python_package_name": "{{ cookiecutter.python_package_name }}",
+    "volto_addon_name": "{{ cookiecutter.volto_addon_name }}",
     "plone_version": "{{ cookiecutter.plone_version }}",
     "volto_version": "{{ cookiecutter.volto_version }}",
     "language_code": "{{ cookiecutter.language_code }}",

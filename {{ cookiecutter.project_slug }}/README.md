@@ -12,7 +12,7 @@
 ### Development Setup
 
 - Python 3.9, 3.10, 3.11
-- Node 16
+- Node {{ cookiecutter.__node_version }}
 - yarn
 - Docker
 

@@ -13,6 +13,7 @@ def context() -> dict:
         "author": "PloneGov-BR",
         "email": "gov@plone.org.br",
         "python_package_name": "ploneorgbr",
+        "volto_addon_name": "volto-ploneorgbr",
         "python_test_framework": "pytest",
         "plone_version": "6.0.0a4",
         "volto_version": "16.0.0-alpha.4",
@@ -32,6 +33,7 @@ def context_unittest() -> dict:
         "author": "PloneGov-BR",
         "email": "gov@plone.org.br",
         "python_package_name": "ploneorgbr",
+        "volto_addon_name": "volto-ploneorgbr",
         "python_test_framework": "unittest",
         "plone_version": "6.0.0a4",
         "volto_version": "16.0.0-alpha.4",
@@ -51,6 +53,7 @@ def bad_context() -> dict:
         "author": "PloneGov-BR",
         "email": "gov@plone.org.br",
         "python_package_name": "plone-org-br",  # error
+        "volto_addon_name": "volto-ploneorgbr",
         "plone_version": "5.2.8",  # error
         "volto_version": "16.0.0-alpha.4",
         "language_code": "en-",  # error

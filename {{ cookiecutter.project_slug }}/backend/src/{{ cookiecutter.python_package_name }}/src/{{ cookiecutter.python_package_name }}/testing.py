@@ -9,7 +9,7 @@ from plone.testing.zope import WSGI_SERVER_FIXTURE
 import {{ cookiecutter.python_package_name }}
 
 
-class {{ cookiecutter.__python_package_name_upper }}Layer(PloneSandboxLayer):
+class Layer(PloneSandboxLayer):
 
     defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
 
@@ -27,24 +27,24 @@ class {{ cookiecutter.__python_package_name_upper }}Layer(PloneSandboxLayer):
         applyProfile(portal, "{{ cookiecutter.python_package_name }}:initial")
 
 
-{{ cookiecutter.__python_package_name_upper }}_FIXTURE = {{ cookiecutter.__python_package_name_upper }}Layer()
+FIXTURE = Layer()
 
 
-{{ cookiecutter.__python_package_name_upper }}_INTEGRATION_TESTING = IntegrationTesting(
-    bases=({{ cookiecutter.__python_package_name_upper }}_FIXTURE,),
+INTEGRATION_TESTING = IntegrationTesting(
+    bases=(FIXTURE,),
     name="{{ cookiecutter.__python_package_name_upper }}Layer:IntegrationTesting",
 )
 
 
-{{ cookiecutter.__python_package_name_upper }}_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=({{ cookiecutter.__python_package_name_upper }}_FIXTURE, WSGI_SERVER_FIXTURE),
+FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(FIXTURE, WSGI_SERVER_FIXTURE),
     name="{{ cookiecutter.__python_package_name_upper }}Layer:FunctionalTesting",
 )
 
 
-{{ cookiecutter.__python_package_name_upper }}ACCEPTANCE_TESTING = FunctionalTesting(
+ACCEPTANCE_TESTING = FunctionalTesting(
     bases=(
-        {{ cookiecutter.__python_package_name_upper }}_FIXTURE,
+        FIXTURE,
         REMOTE_LIBRARY_BUNDLE_FIXTURE,
         WSGI_SERVER_FIXTURE,
     ),
