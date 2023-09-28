@@ -3,24 +3,49 @@ version: '3.8'
 
 services:
   traefik:
-    image: traefik:v2.10
+    image: traefik:{{ cookiecutter.__devops_traefik_version }}
 
     ports:
       - 80:80
       - 443:443
 
     deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network=nw-webserver
+        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
-        - traefik.http.middlewares.admin-auth.basicauth.users=${TRAEFIK_AUTH_USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
-        - traefik.http.routers.traefik-public-https.rule=Host(`${TRAEFIK_FQDN?Variable TRAEFIK_FQDN not set}`)
+{%- if cookiecutter.__devops_traefik_include_ui == 'yes' %}
+        - traefik.http.services.traefik-public.loadbalancer.server.port=8000
+        ## Basic Authentication
+        ### Note: all dollar signs in the hash need to be doubled for escaping.
+        ### To create user:password pair, it's possible to use this command:
+        ### echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+        ### Defaults to admin:admin
+        - traefik.http.middlewares.admin-auth.basicauth.users=admin:$$apr1$$uZPT5Fgu$$AmlIdamxT5ipBvPlsdfD70
+        - traefik.http.routers.traefik-public-https.rule=Host(`traefik-{{ cookiecutter.hostname }}`)
         - traefik.http.routers.traefik-public-https.entrypoints=https
         - traefik.http.routers.traefik-public-https.tls=true
         - traefik.http.routers.traefik-public-https.service=api@internal
         - traefik.http.routers.traefik-public-https.middlewares=admin-auth
-        - traefik.http.services.traefik-public.loadbalancer.server.port=8000
+{%- else %}
+        #- traefik.http.services.traefik-public.loadbalancer.server.port=8000
+        ## Basic Authentication
+        ### Note: all dollar signs in the hash need to be doubled for escaping.
+        ### To create user:password pair, it's possible to use this command:
+        ### echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+        ### Defaults to admin:admin
+        #- traefik.http.middlewares.admin-auth.basicauth.users=admin:$$apr1$$uZPT5Fgu$$AmlIdamxT5ipBvPlsdfD70
+        #- traefik.http.routers.traefik-public-https.rule=Host(`traefik-{{ cookiecutter.hostname }}`)
+        #- traefik.http.routers.traefik-public-https.entrypoints=https
+        #- traefik.http.routers.traefik-public-https.tls=true
+        #- traefik.http.routers.traefik-public-https.service=api@internal
+        #- traefik.http.routers.traefik-public-https.middlewares=admin-auth
+{%- endif %}
 
         # GENERIC MIDDLEWARES
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
@@ -36,8 +61,7 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - vol-traefik-public-certificates:/certificates
-      - vol-traefik-config:/config
+      - vol-traefik-certs:/certificates
 
     command:
       - --providers.docker
@@ -46,27 +70,25 @@ services:
       - --providers.docker.swarmmode
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
-      - --certificatesresolvers.le.acme.email=${TRAEFIK_EMAIL?Variable TRAEFIK_EMAIL not set}
+      - --certificatesresolvers.le.acme.email={{ cookiecutter.email }}
       - --certificatesresolvers.le.acme.storage=/certificates/acme.json
       - --certificatesresolvers.le.acme.tlschallenge=true
-      - --providers.file.directory=/config
-      - --providers.file.watch=true
       - --accesslog
       - --log
+      - --log.level=INFO
       - --api
 
     networks:
-      - nw-webserver
+      - {{ cookiecutter.__devops_swarm_public_network }}
 
   frontend:
-    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:latest
+    image: {{ cookiecutter.__container_image_prefix }}-frontend:${STACK_PARAM:-latest}
     environment:
       RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
     depends_on:
       - backend
     networks:
-      - nw-webserver
-      - nw-data
+      - {{ cookiecutter.__devops_swarm_public_network }}
     deploy:
       replicas: 2
       update_config:
@@ -75,13 +97,13 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network=nw-webserver
+        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
         # Service
         - traefik.http.services.svc-frontend.loadbalancer.server.port=3000
         # Routers
         ## /
-        - traefik.http.routers.rt-frontend.rule=Host(`${FQDN?Unset}`)
+        - traefik.http.routers.rt-frontend.rule=Host(`{{ cookiecutter.hostname }}`)
         - traefik.http.routers.rt-frontend.entrypoints=https
         - traefik.http.routers.rt-frontend.tls=true
         - traefik.http.routers.rt-frontend.tls.certresolver=le
@@ -89,15 +111,13 @@ services:
         - traefik.http.routers.frontend.middlewares=gzip
 
   backend:
-    image: {{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:latest
+    image: {{ cookiecutter.__container_image_prefix }}-backend:${STACK_PARAM:-latest}
     environment:
-      SITE: Plone
-      RELSTORAGE_DSN: "dbname='plone' user='plone' host='db' password='plone'"
+      RELSTORAGE_DSN: "dbname='${DB_NAME:-plone}' user='${DB_USER:-plone}' host='${DB_HOST:-db}' password='${DB_PASSWORD:-{{ cookiecutter.__devops_db_password }}}' port='${DB_PORT:-5432}'"
     depends_on:
       - db
     networks:
-      - nw-webserver
-      - nw-data
+      - {{ cookiecutter.__devops_swarm_public_network }}
     deploy:
       replicas: 2
       update_config:
@@ -106,7 +126,7 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network=nw-webserver
+        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
         # Services
         - traefik.http.services.svc-backend.loadbalancer.server.port=8080
@@ -114,11 +134,11 @@ services:
         # Middlewares
         ## VHM rewrite /++api++/
         - "traefik.http.middlewares.mw-backend-vhm-api.replacepathregex.regex=^/\\+\\+api\\+\\+($$|/.*)"
-        - "traefik.http.middlewares.mw-backend-vhm-api.replacepathregex.replacement=/VirtualHostBase/https/${FQDN?Unset}/Plone/++api++/VirtualHostRoot/$$1"
+        - "traefik.http.middlewares.mw-backend-vhm-api.replacepathregex.replacement=/VirtualHostBase/https/{{ cookiecutter.hostname }}/Plone/++api++/VirtualHostRoot$$1"
 
         ## VHM rewrite /ClassicUI/
         - "traefik.http.middlewares.mw-backend-vhm-classic.replacepathregex.regex=^/ClassicUI($$|/.*)"
-        - "traefik.http.middlewares.mw-backend-vhm-classic.replacepathregex.replacement=/VirtualHostBase/https/${FQDN?Unset}/Plone/VirtualHostRoot/_vh_ClassicUI/$$1"
+        - "traefik.http.middlewares.mw-backend-vhm-classic.replacepathregex.replacement=/VirtualHostBase/https/{{ cookiecutter.hostname }}/Plone/VirtualHostRoot/_vh_ClassicUI$$1"
 
         ## Basic Authentication
         ### Note: all dollar signs in the hash need to be doubled for escaping.
@@ -129,40 +149,31 @@ services:
 
         # Routes
         ## /++api++
-        - traefik.http.routers.rt-backend-api.rule=Host(`${FQDN?Unset}`) && (PathPrefix(`/++api++`))
+        - traefik.http.routers.rt-backend-api.rule=Host(`{{ cookiecutter.hostname }}`) && PathPrefix(`/++api++`)
         - traefik.http.routers.rt-backend-api.entrypoints=https
         - traefik.http.routers.rt-backend-api.tls=true
         - traefik.http.routers.rt-backend-api.service=svc-backend
         - traefik.http.routers.rt-backend-api.middlewares=gzip,mw-backend-vhm-api
         ## /ClassicUI
-        - traefik.http.routers.rt-backend-classic.rule=Host(`${FQDN?Unset}`) && PathPrefix(`/ClassicUI`)
+        - traefik.http.routers.rt-backend-classic.rule=Host(`{{ cookiecutter.hostname }}`) && PathPrefix(`/ClassicUI`)
         - traefik.http.routers.rt-backend-classic.entrypoints=https
         - traefik.http.routers.rt-backend-classic.tls=true
         - traefik.http.routers.rt-backend-classic.service=svc-backend
         - traefik.http.routers.rt-backend-classic.middlewares=gzip,mw-backend-auth,mw-backend-vhm-classic
 
   db:
-    image: postgres:14.2
+    image: postgres:{{ cookiecutter.__devops_db_version }}
     environment:
       POSTGRES_USER: plone
-      POSTGRES_PASSWORD: plone
+      POSTGRES_PASSWORD: {{ cookiecutter.__devops_db_password }}
       POSTGRES_DB: plone
     volumes:
       - vol-site-data:/var/lib/postgresql/data
     networks:
-      - nw-data
+      - {{ cookiecutter.__devops_swarm_public_network }}
 
 volumes:
-  vol-traefik-public-certificates:
-    driver_opts:
-      type: none
-      device: /data/traefik/certificates
-      o: bind
-  vol-traefik-config:
-    driver_opts:
-      type: none
-      device: /data/traefik/config
-      o: bind
+  vol-traefik-certs: {}
   vol-site-data:
     driver_opts:
       type: none
@@ -170,8 +181,6 @@ volumes:
       o: bind
 
 networks:
-  nw-webserver:
-    external: true
-    driver: overlay
-  nw-data:
+  {{ cookiecutter.__devops_swarm_public_network }}:
+    internal: true
     driver: overlay

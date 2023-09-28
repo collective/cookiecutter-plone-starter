@@ -1,98 +1,132 @@
-# {{ cookiecutter.project_title }} Devops
+# DevOps Operations for {{ cookiecutter.project_title }} 🚀
 
+Welcome to the DevOps documentation for {{ cookiecutter.project_title }}! In this guide, we'll walk you through the setup and deployment process, ensuring a smooth and efficient development workflow. We leverage the power of [Ansible](https://www.ansible.com/), [Docker](https://www.docker.com/), and [Docker Swarm](https://docs.docker.com/engine/swarm/) to automate, containerize, and orchestrate application deployment. 🛠️🐳🌐
+
+- **Ansible** empowers us to automate tasks like software provisioning, configuration management, and application deployment. It's like having a robot assistant that takes care of the repetitive tasks, freeing you to focus on more strategic activities! 🤖✨
+
+- **Docker** encapsulates our application and its dependencies into a container to ensure consistency across multiple development, testing, and deployment environments. It's like packing your entire application, including the environment it runs in, into a portable box that you can run anywhere! 📦🚀
+
+- **Docker Swarm** takes it a step further by turning a group of Docker engines into a single, virtual Docker engine. It allows us to deploy our containers across multiple machines, enhancing availability and scalability. It's like having a swarm of bees working harmoniously to build, run, and scale your application! 🐝🌟
+
+### Our Docker Stack 📚
+
+We deploy a robust website running [Plone](https://plone.org/) using a Docker stack that consists of:
+
+- **Traefik:** Serves as the router and SSL termination, integrated with [Let's Encrypt](https://letsencrypt.org/) for free SSL certificates, ensuring that our website is secure and trusted. 🔒🌐
+
+- **Plone Frontend using Volto:** A modern, fast, React-based frontend that delivers an exceptional user experience. It's like having a sleek, high-performance car to navigate the web! 🏎️💨
+
+- **Plone Backend:** Responsible for the API, it's the engine under the hood, ensuring that data is processed, stored, and retrieved efficiently. 🏭🚀
+
+- **Postgres 14 Database:** A reliable, robust database to store the site data, ensuring that our content is safe, secure, and quickly accessible. 🗃️⚡
+
+
+Now, let’s dive into the setup! 🏊‍♂️💫
 ## Setup
 
-### Environment configuration
-#### For Local Deployment (Using Vagrant)
-
-```shell
-source .env_dev
-```
-#### For Production
-
-Create `.env_prod`, if it does not exist, setting all values defined in `.env_dev`, then:
-
-```shell
-source .env_prod
-```
-
-Also, add a `prod.yml` file to `inventory` folder (with information about the production server), and a `{{ cookiecutter.github_organization }}-prod.yml` to `host_vars` folder.
-
-### Install Ansible
-
-Install Python 3 virtual environment and Ansible
+Ensure you navigate to the `devops` folder before executing any commands listed in this document. From the root of your repository, execute:
 
 ```shell
 cd devops
-make clean
+```
+
+### Environment Configuration
+
+Start by creating an `.env` file in the `devops` folder. You can copy the existing `.env_dist` file as a starting point:
+
+```shell
+cp .env_dist .env
+```
+
+Edit the `.env` file to suit your environment. For example:
+
+```
+DEPLOY_ENV=prod
+DEPLOY_HOST={{ cookiecutter.hostname }}
+DEPLOY_PORT=22
+DEPLOY_USER=plone
+DOCKER_CONFIG=.docker
+STACK_NAME={{ cookiecutter.__devops_stack_name }}
+```
+
+Note: The `.env` file is included in `.gitignore`, ensuring environment-specific configurations aren't pushed to the repository.
+
+### Ansible Installation
+
+Execute the following to create a Python 3 virtual environment and install Ansible along with its dependencies:
+
+```shell
 make setup
 ```
 
-### Configure SSH key
+### Inventory Configuration
 
-Edit the `group_vars/users.yml` file and replace the line **public_keys: []** with
+Modify `devops/inventory/hosts.yml` with the appropriate connection details:
 
 ```yaml
-    public_keys:
-      - '<your ssh public key>'
-
+---
+prod:
+  hosts:
+    {{ cookiecutter.hostname }}:
+      ansible_user: root
+      host: {{ cookiecutter.__devops_host }}
+      hostname: {{ cookiecutter.hostname }}
 ```
 
-## Docker configuration
+## Server Setup
 
-As the images used in this deployment are public, just make sure you already are logged in with Docker.
+With the correct information in `devops/inventory/hosts.yml`, initiate the remote server setup:
 
-After that, we need to create a new docker context, to be stored inside this folder.
+```shell
+make server-setup
+```
+
+This command executes the Ansible playbook `devops/playbooks/setup.yml` on the remote server, performing various setup tasks including user creation, SSH setup, Docker installation, and more.
+
+## Project Deployment
+
+### Docker Configuration
+
+Ensure you're logged into your Docker account as the deployment uses public images. Then, create a new Docker context for the remote server:
 
 ```shell
 make docker-setup
 ```
 
-## Deploy
-
-The shortcut is to run all steps at once with:
+Verify the configuration with:
 
 ```shell
-make all
+make docker-info
 ```
 
-This command provision a new machine, if running in the local environment, run the playbook and then deploy the stack.
-### Provision
+### Stack Deployment
 
-Only valid for local deployments using Vagrant. This creates a new Vagrant box with the configuration according to the `Vagrantfile`.
+Deploy the stack defined in `devops/stacks/{{ cookiecutter.hostname }}.yml` to the remote server with:
 
 ```shell
-make provision
+make stack-deploy
 ```
 
-### Run playbook
+### Stack Status Verification
 
-Setup the server, by installing base packages, creating `UFW` configuration and adding users
+Check the status of all services in your stack:
 
 ```shell
-make run-playbook
+make stack-status
 ```
 
-### Deploy stack to the server
+### Plone Site Creation
 
-Run `docker stack` to deploy to the server
+If deploying for the first time, the frontend containers might not be `healthy` due to the absence of a configured Plone site on the backend. Create a new site with:
 
 ```shell
-make deploy
+make stack-create-site
 ```
 
-Use this also when there is a new version of any of the images.
+### Log Monitoring
 
-## Check Stack Status
+Monitor logs for each service using the commands below:
 
-```shell
-make status
-```
-
-## Check Logs
-
-|Tool|Command|
-|-|-|
-|webserver|`make logs-webserver`|
-|frontend|`make logs-frontend`|
-|backend|`make logs-backend`|
+- Traefik: ```make logs-webserver```
+- Frontend: ```make logs-frontend```
+- Backend: ```make logs-backend```

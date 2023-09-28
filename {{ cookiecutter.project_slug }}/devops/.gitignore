@@ -1,11 +1,10 @@
 .docker
-.env_prod
-.vagrant
-.vagrant_private_key
+.env
+.env_gha
 bin
+etc/keys/*_prod_deploy_rsa
 include
-inventory/prod.yml
-host_vars/{{ cookiecutter.github_organization }}-prod.yml
 lib
 lib64
 pyvenv.cfg
+roles

@@ -1,8 +1,30 @@
 {
   "blocks": {
+    "94b9fb26-041d-438c-981a-671a89854cbe": {
+      "@type": "slate",
+      "plaintext": "Welcome to {{ cookiecutter.project_title }}",
+      "value": [
+        {
+          "children": [
+            {
+              "text": ""
+            },
+            {
+              "children": [
+                {
+                  "text": "Welcome to {{ cookiecutter.project_title }}"
+                }
+              ],
+              "type": "b"
+            }
+          ],
+          "type": "p"
+        }
+      ]
+    },
     "1006adfe-d9b1-4e70-9b32-a9158310723d": {
       "@type": "slate",
-      "plaintext": " Plone is an enterprise CMS built with Python.",
+      "plaintext": "Plone is an enterprise CMS built with Python.",
       "value": [
         {
           "children": [
@@ -42,6 +64,7 @@
   },
   "blocks_layout": {
     "items": [
+      "94b9fb26-041d-438c-981a-671a89854cbe",
       "1006adfe-d9b1-4e70-9b32-a9158310723d"
     ]
   },

@@ -7,7 +7,7 @@ SHELL:=bash
 .DELETE_ON_ERROR:
 MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
-IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend
+IMAGE_NAME={{ cookiecutter.__container_image_prefix }}-frontend
 IMAGE_TAG=latest
 
 NODEBIN = ./node_modules/.bin
@@ -45,7 +45,7 @@ format-lint: ## Format Code with Lint
 	yarn run lint:fix
 
 .PHONY: format
-format: format-prettier format-stylelint format-lint ## Format the codebase according to our standards
+format: format-prettier format-lint format-stylelint ## Format the codebase according to our standards
 
 .PHONY: install
 install: ## Install the frontend

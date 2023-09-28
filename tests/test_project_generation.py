@@ -1,4 +1,4 @@
-"""Test Generator: / and /devops."""
+"""Test Generator: /."""
 import json
 
 import pytest
@@ -9,26 +9,9 @@ import yaml
     "filepath",
     [
         ".editorconfig",
-        ".github/workflows/backend.yml",
-        ".github/workflows/frontend.yml",
         ".gitignore",
         ".vscode/settings.json",
         "CHANGELOG.md",
-        "devops/.env_dev",
-        "devops/.gitignore",
-        "devops/ansible.cfg",
-        "devops/group_vars/all/groups.yml",
-        "devops/group_vars/all/host.yml",
-        "devops/group_vars/all/swap.yml",
-        "devops/group_vars/all/ufw.yml",
-        "devops/group_vars/all/users.yml",
-        "devops/host_vars/plone.org.br-local.yml",
-        "devops/Makefile",
-        "devops/playbook-setup.yml",
-        "devops/README.md",
-        "devops/stacks/plone.yml",
-        "devops/Vagrantfile",
-        "docker-compose.yml",
         "Makefile",
         "README.md",
         "version.txt",
@@ -39,31 +22,6 @@ def test_project_files(cutter_result, filepath: str):
     folder = cutter_result.project_path
     path = folder / filepath
     assert path.is_file()
-
-
-@pytest.mark.parametrize(
-    "filepath",
-    [
-        ".github/workflows/backend.yml",
-        ".github/workflows/frontend.yml",
-        "devops/group_vars/all/groups.yml",
-        "devops/group_vars/all/host.yml",
-        "devops/group_vars/all/swap.yml",
-        "devops/group_vars/all/ufw.yml",
-        "devops/group_vars/all/users.yml",
-        "devops/host_vars/plone.org.br-local.yml",
-        "devops/playbook-setup.yml",
-        "devops/stacks/plone.yml",
-        "docker-compose.yml",
-    ],
-)
-def test_valid_yaml_files(cutter_result, filepath: str):
-    """Test generated yaml files are valid."""
-    folder = cutter_result.project_path
-    path = folder / filepath
-    with open(path, "r") as fh:
-        content = yaml.full_load(fh)
-    assert content
 
 
 @pytest.mark.parametrize(
