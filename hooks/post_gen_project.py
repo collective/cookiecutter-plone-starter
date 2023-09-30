@@ -1,10 +1,13 @@
 """Post generation hook."""
+import json
 import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 from textwrap import dedent
+
+from cookiecutter.utils import rmtree
 
 TERMINATOR = "\x1b[0m"
 WARNING = "\x1b[1;33m"
@@ -13,6 +16,7 @@ HINT = "\x1b[3;35m"
 SUCCESS = "\x1b[1;32m"
 ERROR = "\x1b[1;31m"
 MSG_DELIMITER = "=" * 80
+MSG_DELIMITER_2 = "-" * 80
 
 
 def _error(msg: str) -> str:
@@ -36,12 +40,17 @@ def _info(msg: str) -> str:
 
 
 VOLTO_CONFIG = """
+const applyConfig = (config) => {
   config.settings = {
     ...config.settings,
     isMultilingual: false,
     supportedLanguages: ['{{ cookiecutter.language_code }}'],
     defaultLanguage: '{{ cookiecutter.language_code }}',
   };
+  return config;
+};
+
+export default applyConfig;
 """
 
 
@@ -62,6 +71,76 @@ def run_cmd(command: str, shell: bool, cwd: str) -> bool:
     return False if proc.returncode else True
 
 
+DEVOPS_TO_REMOVE = {
+    "ansible": [
+        "devops/.env_dist",
+        "devops/.gitignore",
+        "devops/ansible.cfg",
+        "devops/etc",
+        "devops/inventory",
+        "devops/Makefile",
+        "devops/playbooks",
+        "devops/requirements",
+        "devops/tasks",
+        "devops/README.md",
+    ],
+    "gha": [
+        ".github/workflows/manual_deploy.yml",
+        "devops/.env_gha",
+        "devops/README-GHA.md",
+    ],
+}
+
+
+def prepare_devops():
+    """Clean up devops."""
+    keep_ansible = int("{{ cookiecutter.devops_ansible }}")
+    keep_gha_manual_deploy = int("{{ cookiecutter.devops_gha_deploy }}")
+    to_remove = []
+    if not keep_ansible:
+        to_remove.extend(DEVOPS_TO_REMOVE["ansible"])
+    if not keep_gha_manual_deploy:
+        to_remove.extend(DEVOPS_TO_REMOVE["gha"])
+    for filepath in to_remove:
+        path = Path(filepath)
+        exists = path.exists()
+        if exists and path.is_dir():
+            rmtree(path)
+        elif exists and path.is_file():
+            path.unlink()
+
+
+def get_npm_global_packages() -> dict:
+    """List all globally installed NPM packages."""
+    cwd = Path()
+    command = "npm ls --json -g"
+    proc = subprocess.run(command, shell=True, cwd=cwd, capture_output=True)
+    if proc.returncode:
+        return {}
+
+    try:
+        response = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        response = {}
+    return response.get("dependencies", {})
+
+
+def npm_packages_to_install(volto_generator_version: str) -> list:
+    """Return a list of packages to be installed globally."""
+    to_install = []
+    installed = get_npm_global_packages()
+    to_check = [("yo", "*"), ("@plone/generator-volto", volto_generator_version)]
+    for package_name, version in to_check:
+        version = None if version == "*" else version
+        package_identifier = f"{package_name}@{version}" if version else package_name
+
+        # Check if the package is already installed or with a distinct version
+        installed_version = installed.get(package_name, {}).get("version", None)
+        if not installed_version or (version and version != installed_version):
+            to_install.append(package_identifier)
+    return to_install
+
+
 def prepare_frontend(
     volto_version: str,
     volto_generator_version: str,
@@ -70,31 +149,15 @@ def prepare_frontend(
 ):
     """Run volto generator."""
     print("Frontend codebase:")
-    addons = " ".join([f"--addon {item}" for item in VOLTO_ADDONS])
     canary = (
         " --canary"
         if [x for x in ("alpha", "beta", "rc") if x in volto_version]
         else ""
     )
-    generator_version_literal = f"@plone/generator-volto@{volto_generator_version}"
     steps = [
         [
-            f"Installing {_info(generator_version_literal)}",
-            [
-                "npm",
-                "install",
-                "--no-audit",
-                "--no-fund",
-                "-g",
-                "yo",
-                f"@plone/generator-volto@{volto_generator_version}",
-            ],
-            sys.platform.startswith("win"),
-            "frontend",
-        ],
-        [
             f"Generate frontend application with @plone/volto {_info(volto_version)}",
-            f"yo @plone/volto frontend --description '{description}' {addons} "
+            f"yo @plone/volto frontend --description '{description}' "
             f"--skip-install --no-interactive --volto={volto_version}{canary}",
             True,
             "frontend",
@@ -106,6 +169,26 @@ def prepare_frontend(
             "frontend",
         ],
     ]
+    to_install = npm_packages_to_install(volto_generator_version)
+    if to_install:
+        cmd = [
+            "npm",
+            "install",
+            "--no-audit",
+            "--no-fund",
+            "-g",
+        ]
+        cmd.extend(to_install)
+        steps.insert(
+            0,
+            [
+                f"Installing required npm packages",
+                cmd,
+                sys.platform.startswith("win"),
+                "frontend",
+            ],
+        )
+
     for step in steps:
         msg, command, shell, cwd = step
         print(f" - {msg}")
@@ -119,13 +202,21 @@ def prepare_frontend(
         dst_filename = src.name.replace(".default", "")
         dst = (frontend_path / dst_filename).resolve()
         os.rename(src, dst)
-    # Add language code setting
-    cfg = (Path("frontend") / "src" / "config.js").resolve()
-    with open(cfg, "r") as fh:
-        data = fh.read()
-    with open(cfg, "w") as fh:
-        new_data = re.sub("\n  \/\/ Add here your project.*\n", VOLTO_CONFIG, data)
-        fh.write(new_data)
+    # Include addons on the volto-addon we created
+    addon_path = (Path("frontend") / "src" / "addons" / volto_addon_name).resolve()
+    addon_package_json = addon_path / "package.json"
+    package_data = json.loads(addon_package_json.read_text())
+    _addons = package_data.get("addons", [])
+    _deps = package_data.get("dependencies", {})
+    for addon in VOLTO_ADDONS:
+        _addons.append(addon)
+        _deps[addon] = "*"
+    package_data["addons"] = _addons
+    package_data["dependencies"] = _deps
+    addon_package_json.write_text(json.dumps(package_data, indent=2))
+    # And add language code settings
+    cfg = addon_path / "src" / "index.js"
+    cfg.write_text(VOLTO_CONFIG)
 
 
 PYTHON_TEST_PATHS_TO_REMOVE = {
@@ -173,6 +264,9 @@ description = "{{ cookiecutter.description }}"
 
 def main():
     """Final fixes."""
+    # Setup Devops
+    prepare_devops()
+    # Setup frontend
     prepare_frontend(
         volto_version=volto_version,
         volto_generator_version=volto_generator_version,
@@ -180,12 +274,14 @@ def main():
         volto_addon_name=volto_addon_name,
     )
     print("")
+    # Setup backend
     prepare_backend()
+    print("")
     print(f"{MSG_DELIMITER}")
     msg = dedent(
         f"""
         {_success('Project "{{ cookiecutter.project_title }}" was generated')}
-
+        {MSG_DELIMITER_2}
         Now, code it, create a git repository, push to your organization.
 
         Sorry for the convenience,

@@ -1,3 +1,0 @@
----
-hostname: '{{ cookiecutter.project_slug }}'
-fqdn: {{ "'{{ hostname }}.localhost'" }}

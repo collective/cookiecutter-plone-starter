@@ -11,6 +11,7 @@ MAKEFLAGS+=--no-builtin-rules
 CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 PROJECT_NAME={{ cookiecutter.project_slug }}
+STACK_NAME={{ cookiecutter.__devops_stack_name }}
 
 # We like colors
 # From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
@@ -117,20 +118,32 @@ build-images:  ## Build docker images
 
 ## Docker stack
 .PHONY: stack-start
-stack-start:  ## Start local stack
+stack-start:  ## Local Stack: Start Services
 	@echo "Start local Docker stack"
-	@docker-compose -f docker-compose.yml up -d --build
-	@echo "http://{{ cookiecutter.project_slug }}.localhost"
+	@docker compose -f docker-compose.yml up -d --build
+	@echo "Now visit: http://{{ cookiecutter.project_slug }}.localhost"
 
 .PHONY: start-stack
-stack-create-site:  ## Create a new site
+stack-create-site:  ## Local Stack: Create a new site
 	@echo "Create a new site in the local Docker stack"
-	@docker-compose -f docker-compose.yml exec backend ./docker-entrypoint.sh create-site
+	@docker compose -f docker-compose.yml exec backend ./docker-entrypoint.sh create-site
+
+.PHONY: start-ps
+stack-status:  ## Local Stack: Check Status
+	@echo "Check the status of the local Docker stack"
+	@docker compose -f docker-compose.yml ps
 
 .PHONY: stack-stop
-stack-stop:  ## Stop local stack
+stack-stop:  ##  Local Stack: Stop Services
 	@echo "Stop local Docker stack"
-	@docker-compose -f docker-compose.yml down
+	@docker compose -f docker-compose.yml stop
+
+.PHONY: stack-rm
+stack-rm:  ## Local Stack: Remove Services and Volumes
+	@echo "Remove local Docker stack"
+	@docker compose -f docker-compose.yml down
+	@echo "Remove local volume data"
+	@docker volume rm $(STACK_NAME)_vol-site-data
 
 ## Acceptance
 .PHONY: build-acceptance-servers

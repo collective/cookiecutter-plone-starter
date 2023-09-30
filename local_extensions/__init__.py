@@ -31,15 +31,21 @@ def latest_version(versions, min_version, include_alphas=False):
 
 
 @simple_filter
-def latest_volto(v) -> str:
+def use_alpha_versions(v: str) -> str:
+    """Should we use alpha versions of Volto."""
+    use_alpha_versions = "Yes" if "USE_VOLTO_ALPHA" in os.environ else "No"
+    return use_alpha_versions
+
+
+@simple_filter
+def latest_volto(use_alpha_versions: str) -> str:
     """Return the latest volto version."""
+    include_alphas = False if use_alpha_versions.lower() == "no" else True
     url: str = "https://registry.npmjs.org/@plone/volto"
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_version(
-        versions, VOLTO_MIN_VERSION, include_alphas="USE_VOLTO_ALPHA" in os.environ
-    )
+    return latest_version(versions, VOLTO_MIN_VERSION, include_alphas=include_alphas)
 
 
 @simple_filter
@@ -101,3 +107,10 @@ def pascal_case(package_name: str) -> str:
     """Return the package name as a string in the PascalCase format ."""
     parts = [name.title() for name in package_name.split("_")]
     return "".join(parts)
+
+
+@simple_filter
+def extract_host(hostname: str) -> str:
+    """Get the host part of a hostname."""
+    parts = hostname.split(".")
+    return parts[0]
