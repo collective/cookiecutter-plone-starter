@@ -55,7 +55,7 @@
   "__gha_docker_docker_login_version": "v3",
   "__gha_docker_docker_build_push_version": "v4",
   "__devops_host": "{{ cookiecutter.hostname | extract_host }}",
-  "__devops_stack_name": "{{ cookiecutter.project_slug | replace('.','-') | replace('_','-') }}",
+  "__devops_stack_name": "{{ cookiecutter.hostname | replace('.','-') | replace('_','-') }}",
   "__devops_swarm_public_network": "nw-internal",
   "__devops_traefik_version": "v2.10",
   "__devops_traefik_include_ui": "no",

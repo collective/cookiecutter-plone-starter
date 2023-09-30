@@ -12,6 +12,10 @@ env:
   IMAGE_NAME_SUFFIX: frontend
   NODE_VERSION: {{ cookiecutter.__node_version }}.x
 
+defaults:
+  run:
+    working-directory: ./frontend
+
 jobs:
 
   code-analysis:

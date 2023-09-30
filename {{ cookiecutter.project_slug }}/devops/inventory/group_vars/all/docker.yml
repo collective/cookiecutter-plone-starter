@@ -3,6 +3,7 @@ docker:
   storage:
     root: "/var/lib/docker"
   network:
+    custom: false
     mtu: 1450
     bip: "10.0.1.1/24"
     default_address_pool:
