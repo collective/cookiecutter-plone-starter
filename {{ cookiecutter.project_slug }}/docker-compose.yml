@@ -1,6 +1,6 @@
 ---
 version: '3.8'
-name: {{ cookiecutter.__devops_stack_name }}
+name: {{ cookiecutter.__devops_compose_name }}
 
 services:
   traefik:
