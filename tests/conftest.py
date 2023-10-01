@@ -4,8 +4,8 @@ from copy import deepcopy
 import pytest
 
 PLONE_VERSION = "6.0.7"
-VOLTO_VERSION = "17.0.0-alpha.30"
-GENERATOR_VERSION = "7.0.0-alpha.11"
+VOLTO_VERSION = "17.0.0"
+GENERATOR_VERSION = "7.0.1"
 
 
 @pytest.fixture(scope="session")
