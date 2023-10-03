@@ -259,7 +259,8 @@ def prepare_backend(python_package_name: str):
         [
             "Use the starter template in plonecli to create some defaults",
             [
-                "pipx run plonecli add --bobconfig=../.mrbob.ini starter",
+                "pipx run plonecli add --bobconfig=../.mrbob.ini"
+                " site_initialization",
             ],
             True,
             f"backend/src/{python_package_name}",
