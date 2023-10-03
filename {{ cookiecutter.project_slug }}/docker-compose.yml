@@ -46,7 +46,7 @@ services:
       - traefik.http.routers.rt-frontend.rule=Host(`{{ cookiecutter.project_slug }}.localhost`)
       - traefik.http.routers.rt-frontend.entrypoints=http
       - traefik.http.routers.rt-frontend.service=svc-frontend
-      - traefik.http.routers.frontend.middlewares=gzip
+      - traefik.http.routers.rt-frontend.middlewares=gzip
 
   backend:
     build:
