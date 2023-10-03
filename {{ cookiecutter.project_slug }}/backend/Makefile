@@ -15,20 +15,20 @@ GREEN=`tput setaf 2`
 RESET=`tput sgr0`
 YELLOW=`tput setaf 3`
 
-PLONE_VERSION={{ cookiecutter.plone_version }}
-
 BACKEND_FOLDER=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-CODE_QUALITY_VERSION=2.0.0
+PLONE_VERSION=$$(cat version.txt)
+
+CODE_QUALITY_VERSION=2.1
 ifndef LOG_LEVEL
 	LOG_LEVEL=INFO
 endif
 CURRENT_USER=$$(whoami)
-USER_INFO=$$(id -u ${CURRENT_USER}):$$(getent group ${CURRENT_USER}|cut -d: -f3)
+USER_INFO=$$(id -u ${CURRENT_USER})
 LINT=docker run --rm -e LOG_LEVEL="${LOG_LEVEL}" -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality:${CODE_QUALITY_VERSION} check
 FORMAT=docker run --rm --user="${USER_INFO}" -e LOG_LEVEL="${LOG_LEVEL}" -v "${BACKEND_FOLDER}":/github/workspace plone/code-quality:${CODE_QUALITY_VERSION} format
 
-IMAGE_NAME={{ cookiecutter.__docker_image_prefix }}{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend
+IMAGE_NAME={{ cookiecutter.__container_image_prefix }}-backend
 IMAGE_TAG=latest
 
 # Python checks
@@ -41,7 +41,7 @@ endif
 
 # version ok?
 PYTHON_VERSION_MIN=3.8
-PYTHON_VERSION_OK=$(shell $(PYTHON) -m 'import sys; print((int(sys.version_info[0]), int(sys.version_info[1])) > tuple(map(int, "$(PYTHON_VERSION_MIN)".split("."))))')
+PYTHON_VERSION_OK=$(shell $(PYTHON) -c "import sys; print((int(sys.version_info[0]), int(sys.version_info[1])) >= tuple(map(int, '$(PYTHON_VERSION_MIN)'.split('.'))))")
 ifeq ($(PYTHON_VERSION_OK),0)
   $(error "Need python $(PYTHON_VERSION) >= $(PYTHON_VERSION_MIN)")
 endif
@@ -143,11 +143,22 @@ lint-zpretty: ## validate ZCML/XML using zpretty
 
 .PHONY: test
 test: ## run tests
+	{%- if cookiecutter.python_test_framework == 'pytest' %}
+	bin/pytest src/{{ cookiecutter.python_package_name }}/tests
+	{%- endif %}
+	{%- if cookiecutter.python_test_framework != 'pytest' %}
 	./bin/zope-testrunner --auto-color --auto-progress --test-path src/{{ cookiecutter.python_package_name }}/src/
+	{%- endif %}
+
 
 .PHONY: test_quiet
 test_quiet: ## run tests removing deprecation warnings
+	{%- if cookiecutter.python_test_framework == 'pytest' %}
+	bin/pytest --disable-warnings src/{{ cookiecutter.python_package_name }}/tests
+	{%- endif %}
+	{%- if cookiecutter.python_test_framework != 'pytest' %}
 	PYTHONWARNINGS=ignore ./bin/zope-testrunner --auto-color --auto-progress --test-path src/{{ cookiecutter.python_package_name }}/src/
+	{%- endif %}
 
 .PHONY: create-site
 create-site: instance/etc/zope.ini ## Create a new site from scratch
@@ -163,4 +174,4 @@ debug: instance/etc/zope.ini ## Run debug console
 
 .PHONY: build-image
 build-image:  ## Build Docker Image
-	@docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile --build-arg PLONE_VERSION=$(PLONE_VERSION)
+	@DOCKER_BUILDKIT=1 docker build . -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile --build-arg PLONE_VERSION=$(PLONE_VERSION)

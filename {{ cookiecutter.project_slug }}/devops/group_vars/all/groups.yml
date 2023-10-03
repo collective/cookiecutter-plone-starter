@@ -1,5 +1,0 @@
----
-user_groups:
-  plone:
-    description: "Plone"
-    state: "present"

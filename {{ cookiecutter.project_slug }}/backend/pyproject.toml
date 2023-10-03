@@ -1,3 +1,8 @@
+{%- if cookiecutter.python_test_framework == 'pytest' %}
+[tool.pytest.ini_options]
+addopts = "--cov-report term --cov={{ cookiecutter.python_package_name }}"
+
+{%- endif %}
 [tool.black]
 line-length = 88
 target-version = ['py38']
@@ -24,7 +29,7 @@ profile = "black"
 force_alphabetical_sort = true
 force_single_line = true
 lines_after_imports = 2
-line_length = 120
+line_length = 88
 
 [tool.flakeheaven]
 format="grouped"

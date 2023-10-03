@@ -104,34 +104,8 @@ def test_validate_python_package_name(value: str, expected: str):
     assert result == expected
 
 
-def test_validate_python_package_name(bad_context: dict):
+def test_validate_check_errors(bad_context: dict):
     """Test check_errors function."""
     errors = pre_gen_project.check_errors(bad_context)
     assert errors
-    assert len(errors) == 4
-
-
-@pytest.mark.parametrize(
-    "value,expected",
-    (
-        ("v16.13.1", "16"),
-        ("v14.0.0", "14"),
-    ),
-)
-def test_node_major_version(value, expected):
-    """Test node_major_version."""
-    func = pre_gen_project.node_major_version
-    assert func(value) == expected
-
-
-@pytest.mark.parametrize(
-    "value,expected",
-    (
-        ("Docker version 20.10.17, build 100c701", "20.10"),
-        ("Docker version 20.10.15", "20.10"),
-    ),
-)
-def test_docker_version(value, expected):
-    """Test docker_version."""
-    func = pre_gen_project.docker_version
-    assert func(value) == expected
+    assert len(errors) == 5
