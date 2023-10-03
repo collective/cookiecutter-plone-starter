@@ -129,13 +129,20 @@ def npm_packages_to_install(volto_generator_version: str) -> list:
     """Return a list of packages to be installed globally."""
     to_install = []
     installed = get_npm_global_packages()
-    to_check = [("yo", "*"), ("@plone/generator-volto", volto_generator_version)]
+    to_check = [
+        ("yo", "*"),
+        ("@plone/generator-volto", volto_generator_version),
+    ]
     for package_name, version in to_check:
         version = None if version == "*" else version
-        package_identifier = f"{package_name}@{version}" if version else package_name
+        package_identifier = (
+            f"{package_name}@{version}" if version else package_name
+        )
 
         # Check if the package is already installed or with a distinct version
-        installed_version = installed.get(package_name, {}).get("version", None)
+        installed_version = installed.get(package_name, {}).get(
+            "version", None
+        )
         if not installed_version or (version and version != installed_version):
             to_install.append(package_identifier)
     return to_install
@@ -156,7 +163,8 @@ def prepare_frontend(
     )
     steps = [
         [
-            f"Generate frontend application with @plone/volto {_info(volto_version)}",
+            "Generate frontend application with @plone/volto"
+            f" {_info(volto_version)}",
             f"yo @plone/volto frontend --description '{description}' "
             f"--skip-install --no-interactive --volto={volto_version}{canary}",
             True,
@@ -164,7 +172,8 @@ def prepare_frontend(
         ],
         [
             f"Generate addon {volto_addon_name}",
-            f"yo @plone/volto:addon {volto_addon_name} --interactive false --skip-install",
+            f"yo @plone/volto:addon {volto_addon_name} --interactive false"
+            " --skip-install",
             True,
             "frontend",
         ],
@@ -203,7 +212,9 @@ def prepare_frontend(
         dst = (frontend_path / dst_filename).resolve()
         os.rename(src, dst)
     # Include addons on the volto-addon we created
-    addon_path = (Path("frontend") / "src" / "addons" / volto_addon_name).resolve()
+    addon_path = (
+        Path("frontend") / "src" / "addons" / volto_addon_name
+    ).resolve()
     addon_package_json = addon_path / "package.json"
     package_data = json.loads(addon_package_json.read_text())
     _addons = package_data.get("addons", [])
@@ -221,16 +232,22 @@ def prepare_frontend(
 
 PYTHON_TEST_PATHS_TO_REMOVE = {
     "pytest": [
-        "src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/tests"
+        "src/{{ cookiecutter.python_package_name }}/src/{{"
+        " cookiecutter.python_package_name }}/tests"
     ],
     "unittest": ["src/{{ cookiecutter.python_package_name }}/tests"],
 }
 
 
 def clean_up_backend_tests():
-    folders = PYTHON_TEST_PATHS_TO_REMOVE["{{ cookiecutter.python_test_framework }}"]
+    folders = PYTHON_TEST_PATHS_TO_REMOVE[
+        "{{ cookiecutter.python_test_framework }}"
+    ]
     for folder in folders:
-        msg = f"Remove folder {folder} not used by {{ cookiecutter.python_test_framework }}"
+        msg = (
+            f"Remove folder {folder} not used by {{"
+            " cookiecutter.python_test_framework }"
+        )
         command = ["rm", "-Rf", folder]
         shell = False
         cwd = "backend"
@@ -257,7 +274,8 @@ def prepare_backend(python_package_name: str):
             "backend",
         ],
         [
-            "Use the starter template in plonecli to create some defaults",
+            "Use the plone_site_initialization template in plonecli to create"
+            " some defaults",
             [
                 "pipx run plonecli add --bobconfig=../.mrbob.ini"
                 " site_initialization",
