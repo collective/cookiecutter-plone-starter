@@ -89,7 +89,7 @@
       "nl": "Nederlands",
       "fi": "Suomi"
     },
-    "github_organization": "GitHub Organization",
+    "github_organization": "GitHub User or Organization",
     "container_registry": {
       "__prompt__": "Container Registry",
       "GitHub": "GitHub Container Registry",
