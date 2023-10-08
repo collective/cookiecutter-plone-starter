@@ -89,6 +89,12 @@ DEVOPS_TO_REMOVE = {
         "devops/.env_gha",
         "devops/README-GHA.md",
     ],
+    "cache": [
+        ".github/workflows/varnish.yml",
+        "/backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
+        "/backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml.xml",
+        "varnish",
+    ],
 }
 
 
@@ -96,11 +102,14 @@ def prepare_devops():
     """Clean up devops."""
     keep_ansible = int("{{ cookiecutter.devops_ansible }}")
     keep_gha_manual_deploy = int("{{ cookiecutter.devops_gha_deploy }}")
+    keep_cache = int("{{ cookiecutter.devops_cache }}")
     to_remove = []
     if not keep_ansible:
         to_remove.extend(DEVOPS_TO_REMOVE["ansible"])
     if not keep_gha_manual_deploy:
         to_remove.extend(DEVOPS_TO_REMOVE["gha"])
+    if not keep_cache:
+        to_remove.extend(DEVOPS_TO_REMOVE["cache"])
     for filepath in to_remove:
         path = Path(filepath)
         exists = path.exists()

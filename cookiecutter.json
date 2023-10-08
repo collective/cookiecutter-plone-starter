@@ -28,6 +28,10 @@
     "GitHub",
     "Docker Hub"
   ],
+  "devops_cache": [
+    "1",
+    "0"
+  ],
   "devops_ansible": [
     "1",
     "0"
@@ -60,6 +64,7 @@
   "__devops_swarm_public_network": "nw-internal",
   "__devops_traefik_version": "v2.10",
   "__devops_traefik_include_ui": "no",
+  "__devops_varnish_version": "7.4",
   "__devops_db_version": "14",
   "__devops_db_password": "{{ random_ascii_string(12) }}",
   "__prompts__": {
@@ -94,6 +99,11 @@
       "__prompt__": "Container Registry",
       "GitHub": "GitHub Container Registry",
       "Docker Hub": "Docker Hub"
+    },
+    "devops_cache": {
+      "__prompt__": "Should we setup a caching server?",
+      "1": "Yes",
+      "0": "No"
     },
     "devops_ansible": {
       "__prompt__": "Add Ansible playbooks?",
