@@ -29,6 +29,29 @@ services:
       - --log
       - --api
 
+  purger:
+    image: ghcr.io/kitconcept/cluster-purger:latest
+    platform: linux/amd64
+    environment:
+      PURGER_SERVICE_NAME: varnish
+      PURGER_SERVICE_PORT: 80
+      PURGER_MODE: "compose"
+      PURGER_PUBLIC_SITES: "['{{ cookiecutter.project_slug }}.localhost']"
+
+  varnish:
+    image: varnish
+    volumes:
+      - ./varnish/etc/varnish.vcl:/etc/varnish/default.vcl
+    labels:
+      - traefik.enable=true
+      - traefik.constraint-label=public
+      # SERVICE
+      - traefik.http.services.svc-varnish.loadbalancer.server.port=80
+    ports:
+      - "8000-8001:80"
+    depends_on:
+      - backend
+
   frontend:
     build:
       context: ./frontend
@@ -43,10 +66,15 @@ services:
       - traefik.http.services.svc-frontend.loadbalancer.server.port=3000
       # Routers
       ## /
-      - traefik.http.routers.rt-frontend.rule=Host(`{{ cookiecutter.project_slug }}.localhost`)
-      - traefik.http.routers.rt-frontend.entrypoints=http
-      - traefik.http.routers.rt-frontend.service=svc-frontend
-      - traefik.http.routers.rt-frontend.middlewares=gzip
+      # Router: Varnish Public
+      - traefik.http.routers.rt-frontend-public.rule=Host(`{{ cookiecutter.project_slug }}.localhost`)
+      - traefik.http.routers.rt-frontend-public.entrypoints=http
+      - traefik.http.routers.rt-frontend-public.service=svc-varnish
+      - traefik.http.routers.rt-frontend-public.middlewares=gzip
+      # Router: Internal
+      - traefik.http.routers.rt-frontend-internal.rule=Host(`{{ cookiecutter.project_slug }}.localhost`) && Headers(`X-Varnish-Routed`, `1`)
+      - traefik.http.routers.rt-frontend-internal.entrypoints=http
+      - traefik.http.routers.rt-frontend-internal.service=svc-frontend
 
   backend:
     build:
@@ -76,13 +104,19 @@ services:
       ### echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
       ### Defaults to admin:admin
       - traefik.http.middlewares.mw-backend-auth.basicauth.users=admin:$$apr1$$uZPT5Fgu$$AmlIdamxT5ipBvPlsdfD70
-
-      # Routes
-      ## /++api++
-      - traefik.http.routers.rt-backend-api.rule=Host(`{{ cookiecutter.project_slug }}.localhost`) && (PathPrefix(`/++api++`))
-      - traefik.http.routers.rt-backend-api.entrypoints=http
-      - traefik.http.routers.rt-backend-api.service=svc-backend
-      - traefik.http.routers.rt-backend-api.middlewares=gzip,mw-backend-vhm-api
+      # Routers
+      # Router: Varnish Public
+      ## /++api++/
+      - traefik.http.routers.rt-backend-api-public.rule=Host(`{{ cookiecutter.project_slug }}.localhost`) && PathPrefix(`/++api++`)
+      - traefik.http.routers.rt-backend-api-public.entrypoints=http
+      - traefik.http.routers.rt-backend-api-public.service=svc-varnish
+      - traefik.http.routers.rt-backend-api-public.middlewares=gzip
+      # Router: Internal
+      ## /++api++/
+      - traefik.http.routers.rt-backend-api-internal.rule=Host(`{{ cookiecutter.project_slug }}.localhost`) && PathPrefix(`/++api++`) && Headers(`X-Varnish-Routed`, `1`)
+      - traefik.http.routers.rt-backend-api-internal.entrypoints=http
+      - traefik.http.routers.rt-backend-api-internal.service=svc-backend
+      - traefik.http.routers.rt-backend-api-internal.middlewares=gzip,mw-backend-vhm-api
       ## /ClassicUI
       - traefik.http.routers.rt-backend-classic.rule=Host(`{{ cookiecutter.project_slug }}.localhost`) && PathPrefix(`/ClassicUI`)
       - traefik.http.routers.rt-backend-classic.entrypoints=http
