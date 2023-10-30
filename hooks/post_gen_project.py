@@ -91,8 +91,8 @@ DEVOPS_TO_REMOVE = {
     ],
     "cache": [
         ".github/workflows/varnish.yml",
-        "/backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
-        "/backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml.xml",
+        "backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
+        "backend/src/{{ cookiecutter.python_package_name }}/src/{{ cookiecutter.python_package_name }}/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml",
         "varnish",
     ],
 }

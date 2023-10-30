@@ -1,0 +1,69 @@
+name: Varnish Image Creation
+
+on:
+  push:
+    paths:
+      - "varnish/**"
+      - ".github/workflows/varnish.yml"
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME_PREFIX: {{ cookiecutter.__container_image_prefix }}
+  IMAGE_NAME_SUFFIX: varnish
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@{{ cookiecutter.__gha_checkout_version }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@{{ cookiecutter.__gha_docker_docker_metadata_version }}
+        with:
+          images: |
+            {{ "${{ env.IMAGE_NAME_PREFIX }}-${{ env.IMAGE_NAME_SUFFIX }}" }}
+          labels: |
+            org.label-schema.docker.cmd=docker run -d -p 80:80 {{ "${{ env.IMAGE_NAME_PREFIX }}-${{ env.IMAGE_NAME_SUFFIX }}" }}:latest
+          flavor:
+            latest=false
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable={{ "{{is_default_branch}}" }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@{{ cookiecutter.__gha_docker_docker_qemu_version }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@{{ cookiecutter.__gha_docker_docker_buildx_version }}
+
+      - name: Login to Container Registry
+        uses: docker/login-action@{{ cookiecutter.__gha_docker_docker_login_version }}
+        with:
+          {%- if cookiecutter.container_registry == 'Docker Hub' %}
+          username: {{"${{ secrets.DOCKERHUB_USERNAME }}"}}
+          password: {{"${{ secrets.DOCKERHUB_TOKEN }}"}}
+          {%- endif %}
+          {%- if cookiecutter.container_registry == 'GitHub' %}
+          registry: ghcr.io
+          username: {{"${{ github.actor }}"}}
+          password: {{"${{ secrets.GITHUB_TOKEN }}"}}
+          {%- endif %}
+
+      - name: Build and push
+        uses: docker/build-push-action@{{ cookiecutter.__gha_docker_docker_build_push_version }}
+        with:
+          platforms: linux/amd64
+          context: varnish
+          file: varnish/Dockerfile
+          push: {{"${{ github.event_name != 'pull_request' }}"}}
+          tags: {{"${{ steps.meta.outputs.tags }}"}}
+          labels: {{"${{ steps.meta.outputs.labels }}"}}

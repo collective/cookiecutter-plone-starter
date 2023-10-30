@@ -39,6 +39,22 @@ def context_unittest(context) -> dict:
 
 
 @pytest.fixture(scope="session")
+def context_devops_cache(context) -> dict:
+    """Cookiecutter context."""
+    new_context = deepcopy(context)
+    new_context["devops_cache"] = "1"
+    return new_context
+
+
+@pytest.fixture(scope="session")
+def context_devops_no_cache(context) -> dict:
+    """Cookiecutter context."""
+    new_context = deepcopy(context)
+    new_context["devops_cache"] = "0"
+    return new_context
+
+
+@pytest.fixture(scope="session")
 def context_devops_no_ansible(context) -> dict:
     """Cookiecutter context."""
     new_context = deepcopy(context)
@@ -96,3 +112,15 @@ def cutter_result_devops_no_ansible(cookies_session, context_devops_no_ansible):
 def cutter_result_devops_no_gha_deploy(cookies_session, context_devops_no_gha_deploy):
     """Cookiecutter result."""
     return cookies_session.bake(extra_context=context_devops_no_gha_deploy)
+
+
+@pytest.fixture(scope="session")
+def cutter_devops_result_cache(cookies_session, context_devops_cache):
+    """Cookiecutter result."""
+    return cookies_session.bake(extra_context=context_devops_cache)
+
+
+@pytest.fixture(scope="session")
+def cutter_result_devops_no_cache(cookies_session, context_devops_no_cache):
+    """Cookiecutter result."""
+    return cookies_session.bake(extra_context=context_devops_no_cache)
