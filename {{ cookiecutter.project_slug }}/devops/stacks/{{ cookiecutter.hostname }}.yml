@@ -19,7 +19,7 @@ services:
         - traefik.enable=true
         - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
-{%- if cookiecutter.__devops_traefik_include_ui == 'yes' %}
+{%- if cookiecutter.__devops_traefik_stack_include_ui == 'yes' %}
         - traefik.http.services.traefik-public.loadbalancer.server.port=8000
         ## Basic Authentication
         ### Note: all dollar signs in the hash need to be doubled for escaping.

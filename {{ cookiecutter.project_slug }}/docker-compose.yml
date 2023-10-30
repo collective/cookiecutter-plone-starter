@@ -12,6 +12,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.constraint-label=public
+{%- if cookiecutter.__devops_traefik_local_include_ui == 'yes' %}
+      - traefik.http.routers.traefik-public-http.rule=Host(`traefik.{{ cookiecutter.project_slug }}.localhost`)
+      - traefik.http.routers.traefik-public-http.entrypoints=http
+      - traefik.http.routers.traefik-public-http.service=api@internal
+      - traefik.http.services.traefik-public.loadbalancer.server.port=8000
+{%- endif %}
 
       # GENERIC MIDDLEWARES
       - traefik.http.middlewares.gzip.compress=true
@@ -28,6 +34,7 @@ services:
       - --accesslog
       - --log
       - --api
+
 {%- if cookiecutter.devops_cache == '1' %}
   purger:
     image: ghcr.io/kitconcept/cluster-purger:latest
