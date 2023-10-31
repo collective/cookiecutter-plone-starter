@@ -81,6 +81,55 @@ services:
     networks:
       - {{ cookiecutter.__devops_swarm_public_network }}
 
+{%- if cookiecutter.devops_cache == '1' %}
+  purger:
+    image: ghcr.io/kitconcept/cluster-purger:latest
+    environment:
+      PURGER_SERVICE_NAME: varnish
+      PURGER_SERVICE_PORT: 80
+      PURGER_PUBLIC_SITES: "['{{ cookiecutter.hostname }}']"
+    networks:
+      - {{ cookiecutter.__devops_swarm_public_network }}
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+
+  varnish:
+    image: {{ cookiecutter.__container_image_prefix }}-varnish:${STACK_PARAM:-latest}
+    command:
+      - '-p'
+      - 'nuke_limit=2000'
+      - '-p'
+      - 'workspace_client=192k'
+      - '-p'
+      - 'workspace_backend=192k'
+    depends_on:
+      - frontend
+      - backend
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+      labels:
+        - traefik.enable=true
+        - traefik.constraint-label=public
+        # SERVICE
+        - traefik.http.services.svc-varnish.loadbalancer.server.port=80
+        # ROUTERS
+        ## Router: Varnish Public
+        - traefik.http.routers.rt-varnish-public.rule=Host(`{{ cookiecutter.hostname }}`)
+        - traefik.http.routers.rt-varnish-public.entrypoints=https
+        - traefik.http.routers.rt-varnish-public.tls=true
+        - traefik.http.routers.rt-varnish-public.tls.certresolver=le
+        - traefik.http.routers.rt-varnish-public.service=svc-varnish
+        - traefik.http.routers.rt-varnish-public.middlewares=gzip
+{%- endif %}
+
   frontend:
     image: {{ cookiecutter.__container_image_prefix }}-frontend:${STACK_PARAM:-latest}
     environment:
@@ -102,13 +151,20 @@ services:
         # Service
         - traefik.http.services.svc-frontend.loadbalancer.server.port=3000
         # Routers
+{%- if cookiecutter.devops_cache == '0' %}
         ## /
         - traefik.http.routers.rt-frontend.rule=Host(`{{ cookiecutter.hostname }}`)
         - traefik.http.routers.rt-frontend.entrypoints=https
         - traefik.http.routers.rt-frontend.tls=true
         - traefik.http.routers.rt-frontend.tls.certresolver=le
         - traefik.http.routers.rt-frontend.service=svc-frontend
-        - traefik.http.routers.frontend.middlewares=gzip
+        - traefik.http.routers.rt-frontend.middlewares=gzip
+{%- else %}
+        ## / (Internal)
+        - traefik.http.routers.rt-frontend.rule=Host(`{{ cookiecutter.hostname }}`) && Headers(`X-Varnish-Routed`, `1`)
+        - traefik.http.routers.rt-frontend.entrypoints=http
+        - traefik.http.routers.rt-frontend.service=svc-frontend
+{%- endif %}
 
   backend:
     image: {{ cookiecutter.__container_image_prefix }}-backend:${STACK_PARAM:-latest}
@@ -148,12 +204,20 @@ services:
         - traefik.http.middlewares.mw-backend-auth.basicauth.users=admin:$$apr1$$uZPT5Fgu$$AmlIdamxT5ipBvPlsdfD70
 
         # Routes
+{%- if cookiecutter.devops_cache == '0' %}
         ## /++api++
         - traefik.http.routers.rt-backend-api.rule=Host(`{{ cookiecutter.hostname }}`) && PathPrefix(`/++api++`)
         - traefik.http.routers.rt-backend-api.entrypoints=https
         - traefik.http.routers.rt-backend-api.tls=true
         - traefik.http.routers.rt-backend-api.service=svc-backend
         - traefik.http.routers.rt-backend-api.middlewares=gzip,mw-backend-vhm-api
+{%- else %}
+        ## /++api++ (Internal)
+        - traefik.http.routers.rt-backend-api.rule=Host(`{{ cookiecutter.hostname }}`) && PathPrefix(`/++api++`) && Headers(`X-Varnish-Routed`, `1`)
+        - traefik.http.routers.rt-backend-api.entrypoints=http
+        - traefik.http.routers.rt-backend-api.service=svc-backend
+        - traefik.http.routers.rt-backend-api.middlewares=mw-backend-vhm-api
+{%- endif %}
         ## /ClassicUI
         - traefik.http.routers.rt-backend-classic.rule=Host(`{{ cookiecutter.hostname }}`) && PathPrefix(`/ClassicUI`)
         - traefik.http.routers.rt-backend-classic.entrypoints=https
@@ -167,6 +231,12 @@ services:
       POSTGRES_USER: plone
       POSTGRES_PASSWORD: {{ cookiecutter.__devops_db_password }}
       POSTGRES_DB: plone
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 1s
+        order: stop-first
     volumes:
       - vol-site-data:/var/lib/postgresql/data
     networks:

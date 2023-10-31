@@ -1,7 +1,6 @@
 """Test Generator: /varnish (And Cache support)."""
 import pytest
 
-
 CACHE_FILES = [
     "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
     "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml",
