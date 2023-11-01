@@ -3,5 +3,9 @@
   <version>{{ cookiecutter.__profile_version }}</version>
   <dependencies>
     <dependency>profile-plone.volto:default</dependency>
+    {%- if cookiecutter.devops_cache == '1' %}
+    <dependency>plone.app.caching:default</dependency>
+    <dependency>plone.app.caching:with-caching-proxy</dependency>
+    {%- endif %}
   </dependencies>
 </metadata>

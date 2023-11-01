@@ -78,7 +78,7 @@ This monorepo consists of three distinct sections: `backend`, `frontend`, and `d
 
 - **backend**: Houses the API and Plone installation, utilizing pip instead of buildout, and includes a policy package named {{ cookiecutter.python_package_name }}.
 - **frontend**: Contains the React (Volto) package.
-- **devops**: Encompasses Docker Stack and Ansible playbooks.
+- **devops**: Encompasses Docker Stack, Ansible playbooks, and Cache settings.
 
 ### Why This Structure? 🤔
 
