@@ -3,7 +3,7 @@ name: Varnish Image Creation
 on:
   push:
     paths:
-      - "varnish/**"
+      - "devops/varnish/**"
       - ".github/workflows/varnish.yml"
   workflow_dispatch:
 
@@ -62,8 +62,8 @@ jobs:
         uses: docker/build-push-action@{{ cookiecutter.__gha_docker_docker_build_push_version }}
         with:
           platforms: linux/amd64
-          context: varnish
-          file: varnish/Dockerfile
+          context: devops/varnish
+          file: devops/varnish/Dockerfile
           push: {{"${{ github.event_name != 'pull_request' }}"}}
           tags: {{"${{ steps.meta.outputs.tags }}"}}
           labels: {{"${{ steps.meta.outputs.labels }}"}}

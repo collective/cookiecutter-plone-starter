@@ -4,8 +4,8 @@ import pytest
 CACHE_FILES = [
     "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
     "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml",
-    "varnish/Dockerfile",
-    "varnish/etc/varnish.vcl",
+    "devops/varnish/Dockerfile",
+    "devops/varnish/etc/varnish.vcl",
 ]
 
 GHA_ACTIONS_CI = [

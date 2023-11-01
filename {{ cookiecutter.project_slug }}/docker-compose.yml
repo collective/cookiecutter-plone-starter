@@ -47,7 +47,7 @@ services:
 
   varnish:
     build:
-      context: varnish
+      context: devops/varnish
     labels:
       - traefik.enable=true
       - traefik.constraint-label=public
