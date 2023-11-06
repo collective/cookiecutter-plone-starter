@@ -143,7 +143,7 @@ stack-rm:  ## Local Stack: Remove Services and Volumes
 	@echo "Remove local Docker stack"
 	@docker compose -f docker-compose.yml down
 	@echo "Remove local volume data"
-	@docker volume rm $(STACK_NAME)_vol-site-data
+	@docker volume rm $(PROJECT_NAME)_vol-site-data
 
 ## Acceptance
 .PHONY: build-acceptance-servers
