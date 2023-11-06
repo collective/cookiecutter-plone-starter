@@ -162,21 +162,37 @@ def prepare_frontend(
         if [x for x in ("alpha", "beta", "rc") if x in volto_version]
         else ""
     )
-    steps = [
-        [
-            f"Generate frontend application with @plone/volto {_info(volto_version)}",
-            f"yo @plone/volto frontend --description '{description}' "
-            f"--skip-install --no-interactive --volto={volto_version}{canary}",
-            True,
-            "frontend",
+    generator_steps = {
+        "v7": [
+            [
+                f"Generate frontend application with @plone/volto {_info(volto_version)}",
+                f"yo @plone/volto frontend --description '{description}' "
+                f"--skip-install --no-interactive --volto={volto_version}{canary}",
+                True,
+                "frontend",
+            ],
+            [
+                f"Generate addon {volto_addon_name}",
+                f"yo @plone/volto:addon {volto_addon_name} --interactive false --skip-install",
+                True,
+                "frontend",
+            ],
         ],
-        [
-            f"Generate addon {volto_addon_name}",
-            f"yo @plone/volto:addon {volto_addon_name} --interactive false --skip-install",
-            True,
-            "frontend",
+        "v8": [
+            [
+                f"Generate frontend application with @plone/volto {_info(volto_version)}",
+                f"yo @plone/volto frontend --description '{description}' "
+                f"--skip-install --no-interactive --volto={volto_version}{canary}"
+                f"--defaultAddonName {volto_addon_name}",
+                True,
+                "frontend",
+            ],
         ],
-    ]
+    }
+    _generator_family = (
+        "v8" if int(volto_generator_version.split(".")[0]) >= 8 else "v7"
+    )
+    steps = generator_steps.get(_generator_family)
     to_install = npm_packages_to_install(volto_generator_version)
     if to_install:
         cmd = [
