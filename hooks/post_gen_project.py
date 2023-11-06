@@ -182,7 +182,7 @@ def prepare_frontend(
             [
                 f"Generate frontend application with @plone/volto {_info(volto_version)}",
                 f"yo @plone/volto frontend --description '{description}' "
-                f"--skip-install --no-interactive --volto={volto_version}{canary}"
+                f"--skip-install --no-interactive --volto={volto_version}{canary} "
                 f"--defaultAddonName {volto_addon_name}",
                 True,
                 "frontend",
