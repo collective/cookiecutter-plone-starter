@@ -3,7 +3,6 @@ include/
 lib/
 lib64/
 pip-selfcheck.json
-.vscode
 project-title
 projecttitle.projectname/
 .pytest_cache
