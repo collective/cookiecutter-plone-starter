@@ -82,6 +82,7 @@ services:
       - {{ cookiecutter.__devops_swarm_public_network }}
 
 {%- if cookiecutter.devops_cache == '1' %}
+
   purger:
     image: ghcr.io/kitconcept/cluster-purger:latest
     environment:
@@ -138,6 +139,7 @@ services:
     image: {{ cookiecutter.__container_image_prefix }}-frontend:${STACK_PARAM:-latest}
     environment:
       RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
+      RAZZLE_API_PATH: https://{{ cookiecutter.hostname }}
     depends_on:
       - backend
     networks:
