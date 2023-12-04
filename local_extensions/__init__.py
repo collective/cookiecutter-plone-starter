@@ -1,5 +1,6 @@
 import os
 import re
+from typing import List, Optional
 
 import requests
 from cookiecutter.utils import simple_filter
@@ -11,19 +12,57 @@ REGISTRIES = {
 
 
 VOLTO_MIN_VERSION = 16
-VOLTO_GENERATOR_MIN_VERSION = 6
+
+
+VOLTO_GENERATOR_VERSIONS = {
+    16: (6, 8),
+    17: (8, 9),
+    18: (9, None),
+}
+
 
 DEFAULT_NODE = "18"
 
 VOLTO_NODE = {
     16: 16,
     17: DEFAULT_NODE,
+    18: "20",
 }
 
 
-def latest_version(versions, min_version, include_alphas=False):
+def _major_version(version: str) -> int:
+    version = version[1:] if version.startswith("v") else version
+    return int(version.split(".")[0])
+
+
+def _check_version(
+    version: str, min_version: Optional[int] = None, max_version: Optional[int] = None
+) -> bool:
+    """Check if a version is supported."""
+    is_valid = True
+    major = _major_version(version)
+    if min_version:
+        is_valid = is_valid and (major >= min_version)
+    if max_version:
+        is_valid = is_valid and (major < max_version)
+    return is_valid
+
+
+def latest_version(
+    versions: List[str],
+    min_version: Optional[int] = None,
+    max_version: Optional[int] = None,
+    include_alphas: bool = False,
+):
     valid = sorted(
-        [v for v in versions if int(v.split(".")[0]) >= min_version], reverse=True
+        [
+            v
+            for v in versions
+            if _check_version(
+                version=v, min_version=min_version, max_version=max_version
+            )
+        ],
+        reverse=True,
     )
     if not include_alphas:
         valid = [v for v in valid if "-" not in v]
@@ -45,23 +84,33 @@ def latest_volto(use_alpha_versions: str) -> str:
     resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
     data = resp.json()
     versions = [version for version in data["dist-tags"].values()]
-    return latest_version(versions, VOLTO_MIN_VERSION, include_alphas=include_alphas)
-
-
-@simple_filter
-def latest_volto_generator(volto_version) -> str:
-    """Return the latest volto generator version."""
-    url: str = "https://registry.npmjs.org/@plone/generator-volto"
-    resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
-    data = resp.json()
-    versions = [version for version in data["dist-tags"].values()]
     return latest_version(
-        versions, VOLTO_GENERATOR_MIN_VERSION, include_alphas="-" in volto_version
+        versions, min_version=VOLTO_MIN_VERSION, include_alphas=include_alphas
     )
 
 
 @simple_filter
-def latest_plone(v) -> str:
+def latest_volto_generator(raw_volto_version: str) -> str:
+    """Return the latest volto generator version."""
+    url: str = "https://registry.npmjs.org/@plone/generator-volto"
+    resp = requests.get(url, headers={"Accept": "application/vnd.npm.install-v1+json"})
+    data = resp.json()
+    # Reverse list to get latest versions first
+    versions = [version for version in data["versions"].keys()][::-1]
+    # Get min and max versions for a given volto version
+    major = _major_version(raw_volto_version)
+    min_version, max_version = VOLTO_GENERATOR_VERSIONS.get(major)
+    include_alphas = "-" in raw_volto_version
+    return latest_version(
+        versions,
+        min_version=min_version,
+        max_version=max_version,
+        include_alphas=include_alphas,
+    )
+
+
+@simple_filter
+def latest_plone(v: str) -> str:
     """Return the latest plone version."""
     url: str = "https://dist.plone.org/release/6.0-latest/constraints.txt"
     resp = requests.get(url)
@@ -72,7 +121,7 @@ def latest_plone(v) -> str:
 @simple_filter
 def node_version(volto_version: str) -> int:
     """Return the Node Version to be used."""
-    major = int(volto_version.split(".")[0])
+    major = _major_version(volto_version)
     return VOLTO_NODE.get(major, DEFAULT_NODE)
 
 
