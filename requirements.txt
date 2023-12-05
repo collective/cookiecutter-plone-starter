@@ -1,6 +1,7 @@
 black
 cookiecutter
 isort
+requests_mock
 pytest
 pytest-cookies
 wheel
