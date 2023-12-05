@@ -15,18 +15,18 @@ VOLTO_MIN_VERSION = 16
 
 
 VOLTO_GENERATOR_VERSIONS = {
-    16: (6, 8),
-    17: (8, 9),
+    16: (6, 7),
+    17: (7, 9),
     18: (9, None),
 }
 
 
-DEFAULT_NODE = "18"
+DEFAULT_NODE = 18
 
 VOLTO_NODE = {
     16: 16,
     17: DEFAULT_NODE,
-    18: "20",
+    18: 20,
 }
 
 

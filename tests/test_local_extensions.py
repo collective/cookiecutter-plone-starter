@@ -140,7 +140,7 @@ def test_filter_latest_volto(
 @pytest.mark.parametrize(
     "volto_version,expected",
     (
-        ("'16.4.0'", "7.0.1"),
+        ("'16.4.0'", "6.4.1"),
         ("'17.6.1'", "8.1.0"),
         ("'18.0.0-alpha.4'", "9.0.0-alpha.1"),
     ),
