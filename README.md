@@ -11,7 +11,7 @@ Welcome to **Cookiecutter Plone Starter**! Your one-stop solution to kickstart [
 
 - Tailored for Plone 6
 - Compatible with Python 3.8, 3.9, 3.10, 3.11
-- Leverages [volto-generator](https://github.com/plone/volto/tree/master/packages/generator-volto) for frontend code generation
+- Leverages [volto-generator](https://github.com/plone/volto/tree/main/packages/generator-volto) for frontend code generation
 
 ## Getting Started 🏁
 
@@ -31,7 +31,7 @@ pip install pipx
 
 2. **NodeJS & Yarn**
 
-Follow the [Plone documentation](https://6.docs.plone.org/volto/getting-started/install.html) for detailed instructions.
+Follow the [Plone documentation](https://6.docs.plone.org/install/install-from-packages.html#pre-requisites-for-installation) for detailed instructions.
 
 3. **Docker**
 
