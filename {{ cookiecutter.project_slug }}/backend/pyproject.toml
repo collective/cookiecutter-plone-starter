@@ -42,6 +42,12 @@ pycodestyle = ["+*"]
 pyflakes = ["+*"]
 "flake8-*" = ["+*"]
 
+[tool.flake8]
+format="grouped"
+max-line-length=88
+show_source=true
+max-complexity=25
+
 [tool.plone-code-analysis]
 paths = "src/{{ cookiecutter.python_package_name }}/setup.py src/{{ cookiecutter.python_package_name }}/src/ scripts/"
 paths_pyroma = "src/{{ cookiecutter.python_package_name }}"
