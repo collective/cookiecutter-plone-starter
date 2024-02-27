@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v3
+        uses: actions/checkout@{{ cookiecutter.__gha_checkout_version }}
 
       - name: Update Global Yarn
         run: |

@@ -17,10 +17,9 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
-{%- if cookiecutter.__devops_traefik_stack_include_ui == 'yes' %}
         - traefik.http.services.traefik-public.loadbalancer.server.port=8000
+{%- if cookiecutter.__devops_traefik_stack_include_ui == 'yes' %}
         ## Basic Authentication
         ### Note: all dollar signs in the hash need to be doubled for escaping.
         ### To create user:password pair, it's possible to use this command:
@@ -33,7 +32,6 @@ services:
         - traefik.http.routers.traefik-public-https.service=api@internal
         - traefik.http.routers.traefik-public-https.middlewares=admin-auth
 {%- else %}
-        #- traefik.http.services.traefik-public.loadbalancer.server.port=8000
         ## Basic Authentication
         ### Note: all dollar signs in the hash need to be doubled for escaping.
         ### To create user:password pair, it's possible to use this command:
@@ -68,6 +66,7 @@ services:
       - --providers.docker.constraints=Label(`traefik.constraint-label`, `public`)
       - --providers.docker.exposedbydefault=false
       - --providers.docker.swarmmode
+      - --providers.docker.network={{ cookiecutter.__devops_traefik_docker_network }}
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
       - --certificatesresolvers.le.acme.email={{ cookiecutter.email }}
@@ -121,11 +120,10 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
-        # SERVICE
+        # Services
         - traefik.http.services.svc-varnish.loadbalancer.server.port=80
-        # ROUTERS
+        # Routers
         ## Router: Varnish Public
         - traefik.http.routers.rt-varnish-public.rule=Host(`{{ cookiecutter.hostname }}`)
         - traefik.http.routers.rt-varnish-public.entrypoints=https
@@ -152,7 +150,6 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
         # Service
         - traefik.http.services.svc-frontend.loadbalancer.server.port=3000
@@ -188,20 +185,16 @@ services:
         order: start-first
       labels:
         - traefik.enable=true
-        - traefik.docker.network={{ cookiecutter.__devops_swarm_public_network }}
         - traefik.constraint-label=public
         # Services
         - traefik.http.services.svc-backend.loadbalancer.server.port=8080
-
         # Middlewares
         ## VHM rewrite /++api++/
         - "traefik.http.middlewares.mw-backend-vhm-api.replacepathregex.regex=^/\\+\\+api\\+\\+($$|/.*)"
         - "traefik.http.middlewares.mw-backend-vhm-api.replacepathregex.replacement=/VirtualHostBase/https/{{ cookiecutter.hostname }}/Plone/++api++/VirtualHostRoot$$1"
-
         ## VHM rewrite /ClassicUI/
         - "traefik.http.middlewares.mw-backend-vhm-classic.replacepathregex.regex=^/ClassicUI($$|/.*)"
         - "traefik.http.middlewares.mw-backend-vhm-classic.replacepathregex.replacement=/VirtualHostBase/https/{{ cookiecutter.hostname }}/Plone/VirtualHostRoot/_vh_ClassicUI$$1"
-
         ## Basic Authentication
         ### Note: all dollar signs in the hash need to be doubled for escaping.
         ### To create user:password pair, it's possible to use this command:
