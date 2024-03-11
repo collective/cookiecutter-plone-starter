@@ -50,7 +50,7 @@ USE_VOLTO_ALPHA=1 pipx run cookiecutter gh:collective/cookiecutter-plone-starter
 ```
 
 
-### Restarting cookiecutter with previous answers
+### Use options to avoid prompts
 
 The cookiecutter template will ask a quite some questions.
 If the scaffoling fails later for whatever reason, you could restart the cookiecutter with '--replay'.
