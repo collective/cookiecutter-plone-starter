@@ -63,7 +63,6 @@ You can use the [`--no-input`](https://cookiecutter.readthedocs.io/en/latest/cli
 
 #### `--replay` and `--replay-file`
 You can use the options [`--replay`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-replay) and [`--replay-file`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-replay-file) to not prompt for parameters and only use information entered previously or from a specified file.
-At every invocation cookiecutter saves your answers in a temporary file. 
 See [Replay Project Generation](https://cookiecutter.readthedocs.io/en/latest/advanced/replay.html) in the cookiecutter documentation for more information.
 
 ### Initial Build
