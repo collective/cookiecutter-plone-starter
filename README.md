@@ -49,6 +49,22 @@ For alpha versions of Volto:
 USE_VOLTO_ALPHA=1 pipx run cookiecutter gh:collective/cookiecutter-plone-starter
 ```
 
+
+### Use options to avoid prompts
+
+The cookiecutter will ask a lot of questions.
+You can use some of its options to avoid repeatedly entering the same values.
+
+
+#### `--no-input`
+
+You can use the [`--no-input`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-no-input) option to make the cookiecutter not prompt for parameters and only use `cookiecutter.json` file content.
+
+
+#### `--replay` and `--replay-file`
+You can use the options [`--replay`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-replay) and [`--replay-file`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-replay-file) to not prompt for parameters and only use information entered previously or from a specified file.
+See [Replay Project Generation](https://cookiecutter.readthedocs.io/en/latest/advanced/replay.html) in the cookiecutter documentation for more information.
+
 ### Initial Build
 
 ```shell
