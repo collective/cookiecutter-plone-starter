@@ -5,3 +5,4 @@ requests_mock
 pytest
 pytest-cookies
 wheel
+semver
