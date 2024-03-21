@@ -63,7 +63,7 @@ def latest_version(
                 version=v, min_version=min_version, max_version=max_version
             )
         ],
-        key=lambda v: semver.VersionInfo.parse(v),
+        key=lambda v: semver.VersionInfo.parse(v.replace("v", "")),
         reverse=True,
     )
 
