@@ -1,5 +1,4 @@
 """Pre generation hook."""
-
 import re
 import sys
 from pathlib import Path
@@ -114,23 +113,6 @@ def check_errors(data: dict) -> List[str]:
         if error:
             errors.append(f"  - {key}: {_error(error)}")
     return errors
-
-
-try:
-    import semver
-except ModuleNotFoundError:
-    import subprocess
-
-    subprocess.run(
-        [
-            "pip",
-            "install",
-            "--disable-pip-version-check",
-            "--no-python-version-warning",
-            "-q",
-            "semver",
-        ]
-    )
 
 
 def main():
