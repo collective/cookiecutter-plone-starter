@@ -1,4 +1,5 @@
 """Pre Prompt hook."""
+
 import re
 import subprocess
 import sys
@@ -161,6 +162,23 @@ def sanity_check() -> bool:
             msg = f"{_warning(status)}"
         print(f"  [{idx+1}/{total_checks}] {title}: {msg}")
     return not (has_error)
+
+
+try:
+    import semver
+except ModuleNotFoundError:
+    import subprocess
+
+    subprocess.run(
+        [
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--no-python-version-warning",
+            "-q",
+            "semver",
+        ]
+    )
 
 
 def main():
