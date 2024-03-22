@@ -3,7 +3,6 @@ import re
 from typing import List, Optional
 
 import requests
-import semver
 from cookiecutter.utils import simple_filter
 
 REGISTRIES = {
@@ -63,10 +62,8 @@ def latest_version(
                 version=v, min_version=min_version, max_version=max_version
             )
         ],
-        key=lambda v: semver.VersionInfo.parse(v.replace("v", "")),
         reverse=True,
     )
-
     if not include_alphas:
         valid = [v for v in valid if "-" not in v]
     return valid[0]
