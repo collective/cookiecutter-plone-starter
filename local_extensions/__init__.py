@@ -5,6 +5,8 @@ from typing import List, Optional
 import requests
 from cookiecutter.utils import simple_filter
 
+from .semver import VersionInfo
+
 REGISTRIES = {
     "Docker Hub": "",
     "GitHub": "ghcr.io/",
@@ -62,6 +64,7 @@ def latest_version(
                 version=v, min_version=min_version, max_version=max_version
             )
         ],
+        key=lambda v: VersionInfo.parse(v.replace("v", "")),
         reverse=True,
     )
     if not include_alphas:

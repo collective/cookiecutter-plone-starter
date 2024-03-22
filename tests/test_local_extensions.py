@@ -95,7 +95,7 @@ def test_check_version(version: str, min_version, max_version, expected):
         (14, None, False, "v16.13.1"),
         (14, 15, False, "v14.10.10"),
         (14, 15, True, "v14.10.10"),
-        (None, None, True, "v16.14.0-alpha1"),
+        (None, None, True, "v16.14.0-alpha.10"),
         (None, None, False, "v16.13.1"),
     ),
 )
@@ -103,7 +103,13 @@ def test_latest_version(min_version, max_version, include_alphas, expected):
     """Test local_extensions.latest_version."""
     from local_extensions import latest_version
 
-    versions = ["v16.13.1", "v14.10.10", "v16.14.0-alpha1"]
+    versions = [
+        "v16.13.1",
+        "v14.10.10",
+        "v16.14.0-alpha.1",
+        "v16.14.0-alpha.2",
+        "v16.14.0-alpha.10",
+    ]
     func = latest_version
     assert func(versions, min_version, max_version, include_alphas) == expected
 
