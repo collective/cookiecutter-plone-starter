@@ -15,6 +15,9 @@ variables:
   # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_BACKEND_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/backend:latest
+  CONTAINER_FRONTEND_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/frontend:latest
+
 
 build-backend:
   stage: build
@@ -36,7 +39,7 @@ release-image-backend:
   stage: release
   script:
     - docker pull registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
-    - docker tag {{ project_slug }}-backend $CONTAINER_RELEASE_IMAGE
+    - docker tag {{ project_slug }}-backend $CONTAINER_BACKEND_RELEASE_IMAGE
     - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
   only:
     - main
@@ -45,7 +48,7 @@ release-image-frontend:
   stage: release
   script:
     - docker registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
-    - docker tag {{ project_slug }}-frontend $CONTAINER_RELEASE_IMAGE
+    - docker tag {{ project_slug }}-frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
     - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
   only:
     - main
