@@ -10,6 +10,7 @@ from .semver import VersionInfo
 REGISTRIES = {
     "Docker Hub": "",
     "GitHub": "ghcr.io/",
+    "GitLab": "registry.gitlab.com/"
 }
 
 
