@@ -39,7 +39,7 @@ release-image-backend:
   stage: release
   script:
     - docker pull registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
-    - docker tag {{ project_slug }}-backend $CONTAINER_BACKEND_RELEASE_IMAGE
+    - docker tag registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend $CONTAINER_BACKEND_RELEASE_IMAGE
     - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
   only:
     - main
@@ -48,7 +48,7 @@ release-image-frontend:
   stage: release
   script:
     - docker registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
-    - docker tag {{ project_slug }}-frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
+    - docker tag registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
     - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
   only:
     - main
