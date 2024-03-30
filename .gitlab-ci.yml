@@ -23,30 +23,30 @@ build-backend:
   script:
     - cd backend
     - make build-image
-    - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
 
 build-frontend:
   stage: build
   script:
     - cd frontend
     - make build-image
-    - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
 
 release-image-backend:
   stage: release
   script:
-    - docker pull registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
-    - docker tag registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend $CONTAINER_BACKEND_RELEASE_IMAGE
-    - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/backend:latest
+    - docker pull $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
+    - docker tag $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend $CONTAINER_BACKEND_RELEASE_IMAGE
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
   only:
     - main
 
 release-image-frontend:
   stage: release
   script:
-    - docker registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
-    - docker tag registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
-    - docker push registry.gitlab.com/{{ github_organization }}/{{ project_slug }}/frontend:latest
+    - docker $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
+    - docker tag $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
   only:
     - main
 
