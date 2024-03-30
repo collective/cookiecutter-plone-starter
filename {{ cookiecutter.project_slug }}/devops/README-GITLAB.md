@@ -11,7 +11,7 @@ See [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/).
 ### Step 1: Add the deployment environment variables
 
 1.  Visit [GitLab](https://gitlab.com/), or your organization's GitLab instance, and log in with your credentials.
-2.  Go to your repository at [{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}](https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}).
+2.  Go to your repository at [{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}](https://gitlab.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}).
 3.  Click on `Settings` at the left menu and select `CI/CD`.
 4.  Expand the `Variables`.
 5.  Add all variables and their corresponding values, copying them from the `.env` file.
