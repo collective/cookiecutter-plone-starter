@@ -26,7 +26,8 @@
   "github_organization": "collective",
   "container_registry": [
     "GitHub",
-    "Docker Hub"
+    "Docker Hub",
+    "GitLab"
   ],
   "devops_cache": [
     "1",
@@ -96,11 +97,12 @@
       "nl": "Nederlands",
       "fi": "Suomi"
     },
-    "github_organization": "GitHub Username or Organization",
+    "github_organization": "GitHub or GitLab Username or Organization",
     "container_registry": {
       "__prompt__": "Container Registry",
       "GitHub": "GitHub Container Registry",
-      "Docker Hub": "Docker Hub"
+      "Docker Hub": "Docker Hub",
+      "GitLab": "GitLab"
     },
     "devops_cache": {
       "__prompt__": "Should we setup a caching server?",

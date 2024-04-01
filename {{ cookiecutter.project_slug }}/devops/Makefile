@@ -91,7 +91,7 @@ server-setup: bin/ansible ## Server: Configure a remote server
 .PHONY: stack-deploy
 stack-deploy: ## Deploy stacks: $(STACK_NAME)
 	@echo "$(GREEN)==> Stack $(STACK_NAME): Deploy to context $(DEPLOY_ENV) $(RESET)"
-	${DOCKER_CMD_CONTEXT} stack deploy -c stacks/{{ cookiecutter.hostname }}.yml $(STACK_NAME)
+	${DOCKER_CMD_CONTEXT} stack deploy --with-registry-auth -c stacks/{{ cookiecutter.hostname }}.yml $(STACK_NAME)
 
 .PHONY: stack-create-site
 stack-create-site: ## Create a new site stacks: $(STACK_NAME)

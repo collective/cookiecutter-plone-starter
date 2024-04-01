@@ -1,0 +1,107 @@
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - apk add --no-cache make bash python3 ncurses openssh-client-common
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+stages:
+  - build
+  - release
+  - deploy
+
+variables:
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_BACKEND_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/backend:latest
+  CONTAINER_FRONTEND_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/frontend:latest
+
+build-backend:
+  stage: build
+  script:
+    - cd backend
+    - make build-image
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
+
+build-frontend:
+  stage: build
+  script:
+    - cd frontend
+    - make build-image
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
+
+release-image-backend:
+  stage: release
+  script:
+    - docker pull $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
+    - docker tag $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend $CONTAINER_BACKEND_RELEASE_IMAGE
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/backend:latest
+  only:
+    - main
+
+release-image-frontend:
+  stage: release
+  script:
+    - docker $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
+    - docker tag $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend $CONTAINER_FRONTEND_RELEASE_IMAGE
+    - docker push $CI_REGISTRY/{{ github_organization }}/{{ project_slug }}/frontend:latest
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  # when: manual
+  script:
+    - mkdir -p ~/.ssh/
+    - touch ~/.ssh/known_hosts
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - cd devops
+    - eval `ssh-agent -s`
+    - echo "${DEPLOY_SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null # add ssh key
+    - export TERM=dumb
+    - touch .env
+    - 'echo "DEPLOY_ENV: ${DEPLOY_ENV}" >> .env'
+    - 'echo "DEPLOY_HOST: ${DEPLOY_HOST}" >> .env'
+    - 'echo "DEPLOY_PORT: ${DEPLOY_PORT}" >> .env'
+    - 'echo "DEPLOY_USER: ${DEPLOY_USER}" >> .env'
+    - 'echo "DOCKER_CONFIG: ${DOCKER_CONFIG}" >> .env'
+    - 'echo "STACK_NAME: ${STACK_NAME}" >> .env'
+    - make docker-setup
+    - make stack-deploy
+  only:
+    - main
+  environment: production
+# deploy-with-auxiliary-docker-image:
+#   stage: deploy
+#   variables:
+#     REGISTRY: ${CI_REGISTRY}
+#     USERNAME: ${CI_REGISTRY_USER}
+#     PASSWORD: ${CI_REGISTRY_PASSWORD}
+#     REMOTE_HOST: ${DEPLOY_HOST}
+#     REMOTE_PORT: ${DEPLOY_PORT}
+#     REMOTE_USER: ${DEPLOY_USER}
+#     REMOTE_PRIVATE_KEY: "${DEPLOY_SSH_PRIVATE_KEY}"
+#     STACK_FILE: devops/stacks/${DEPLOY_HOST}.yml
+#     STACK_NAME: ${STACK_NAME}
+#     DEPLOY_IMAGE: ghcr.io/kitconcept/docker-stack-deploy:latest
+#   script:
+#     - docker pull ${DEPLOY_IMAGE}
+#     - docker run --rm
+#       -v "$(pwd)":/github/workspace
+#       -v /var/run/docker.sock:/var/run/docker.sock
+#       -e REGISTRY=${REGISTRY}
+#       -e USERNAME=${USERNAME}
+#       -e PASSWORD=${PASSWORD}
+#       -e REMOTE_HOST=${REMOTE_HOST}
+#       -e REMOTE_PORT=${REMOTE_PORT}
+#       -e REMOTE_USER=${REMOTE_USER}
+#       -e REMOTE_PRIVATE_KEY="${REMOTE_PRIVATE_KEY}"
+#       -e STACK_FILE=${STACK_FILE}
+#       -e STACK_NAME=${STACK_NAME}
+#       ${DEPLOY_IMAGE}
+#   only:
+#     - main
+#   environment: production
