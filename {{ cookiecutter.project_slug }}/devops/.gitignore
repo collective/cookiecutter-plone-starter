@@ -2,7 +2,7 @@
 .env
 .env_gha
 bin
-etc/keys/*_prod_deploy_rsa
+etc/keys/*_prod_deploy_ed25519
 include
 lib
 lib64

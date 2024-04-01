@@ -27,7 +27,7 @@ After setting up the environment, it's time to add secrets. These are sensitive 
 | DEPLOY_HOST | {{ cookiecutter.hostname }} | The hostname or IP address of your Docker Swarm manager. |
 | DEPLOY_PORT | 22 | The SSHD Port. |
 | DEPLOY_USER | plone | The user to connect to the deploy host, with permissions to run Docker commands. |
-| DEPLOY_SSH  | Contents of `devops/etc/keys/plone_prod_deploy_rsa` | The private SSH key used for connection. The corresponding public key should be in the `~/.ssh/authorized_keys` file of the deployment user. |
+| DEPLOY_SSH  | Contents of `devops/etc/keys/plone_prod_deploy_ed25519` | The private SSH key used for connection. The corresponding public key should be in the `~/.ssh/authorized_keys` file of the deployment user. |
 | ENV_FILE    | Contents of `devops/.env_file_gha` | The file containing environment variables used by the stack file. |
 
 ### Step 3: Add Repository Variables 📚
