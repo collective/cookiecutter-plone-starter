@@ -24,8 +24,8 @@ DEFAULT_NODE = 20
 
 VOLTO_NODE = {
     16: 16,
-    17: DEFAULT_NODE,
-    18: 20,
+    17: 18,
+    18: DEFAULT_NODE,
 }
 
 
