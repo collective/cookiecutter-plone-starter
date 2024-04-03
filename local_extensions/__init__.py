@@ -7,11 +7,7 @@ from cookiecutter.utils import simple_filter
 
 from .semver import VersionInfo
 
-REGISTRIES = {
-    "Docker Hub": "",
-    "GitHub": "ghcr.io/",
-    "GitLab": "registry.gitlab.com/"
-}
+REGISTRIES = {"Docker Hub": "", "GitHub": "ghcr.io/", "GitLab": "registry.gitlab.com/"}
 
 
 VOLTO_MIN_VERSION = 16
@@ -24,7 +20,7 @@ VOLTO_GENERATOR_VERSIONS = {
 }
 
 
-DEFAULT_NODE = 18
+DEFAULT_NODE = 20
 
 VOLTO_NODE = {
     16: 16,

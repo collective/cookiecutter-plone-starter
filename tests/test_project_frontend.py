@@ -1,4 +1,5 @@
 """Test Generator: /frontend."""
+
 import pytest
 
 RENAMED_FILES = [
