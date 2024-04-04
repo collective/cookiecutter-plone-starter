@@ -183,8 +183,9 @@ start-test-acceptance-frontend-dev: ## Start the Acceptance Frontend Fixture in 
 
 .PHONY: start-test-acceptance-server
 start-test-acceptance-server: build-acceptance-servers ## Start Backend Acceptance Servers in development mode
-	@echo "Start acceptance backend"
+	@echo "Starting test acceptance server"
 	@docker run --rm -p 55001:55001 --name {{ cookiecutter.project_slug }}-backend-acceptance -d {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:acceptance
+	@echo "Started test acceptance server"
 
 .PHONY: test-acceptance
 test-acceptance: ## Start Cypress (for use it while developing)
@@ -192,5 +193,6 @@ test-acceptance: ## Start Cypress (for use it while developing)
 
 .PHONY: stop-acceptance-server
 stop-acceptance-server: ## Stop Backend Acceptance Server in development mode
-	@echo "Stop backend acceptance container"
+	@echo "Stopping acceptance server"
 	@docker stop {{ cookiecutter.project_slug }}-backend-acceptance
+	@echo "Stopped acceptance server"
