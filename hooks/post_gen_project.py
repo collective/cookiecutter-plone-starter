@@ -275,9 +275,8 @@ def prepare_backend():
     for step in steps:
         msg, command, shell, cwd = step
         print(f" - {msg}")
-        result = run_cmd(command, shell=shell, cwd=cwd)
-        if not result:
-            sys.exit(1)
+        run_cmd(command, shell=shell, cwd=cwd)
+        # Note: we intentionally don't exit if formatting fails.
 
 
 volto_version = "{{ cookiecutter.volto_version }}"

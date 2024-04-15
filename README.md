@@ -19,7 +19,7 @@ Welcome to **Cookiecutter Plone Starter**! Your one-stop solution to kickstart [
 
 - **pipx**: A handy tool for installing and running Python applications.
 - **NodeJS & Yarn**: Essential for managing and running JavaScript packages.
-- **Docker**: For containerization and easy deployment.
+- **Docker**: For containerization and easy deployment. (Optional)
 
 ### Installation Guide 🛠️
 
