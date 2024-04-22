@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <!-- List all packages you depend here -->
-  <include package="plone.volto" />
-  <include package="plone.restapi" />
-
-</configure>
