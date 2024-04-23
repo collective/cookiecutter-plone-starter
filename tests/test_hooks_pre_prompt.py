@@ -1,4 +1,5 @@
 """Test cookiecutter generation."""
+
 import pytest
 
 from hooks import pre_prompt
