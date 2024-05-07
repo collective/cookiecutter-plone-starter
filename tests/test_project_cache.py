@@ -1,4 +1,5 @@
 """Test Generator: /varnish (And Cache support)."""
+
 import pytest
 
 CACHE_FILES = [

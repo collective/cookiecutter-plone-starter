@@ -1,4 +1,5 @@
 """Test Generator: /devops."""
+
 import pytest
 import yaml
 

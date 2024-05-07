@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG PLONE_VERSION={{ cookiecutter.plone_version }}
-FROM plone/server-builder:${PLONE_VERSION} as builder
+ARG PLONE_VERSION
+FROM plone/server-builder:${PLONE_VERSION:-{{ cookiecutter.plone_version }}} as builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ RUN <<EOT
     rm -Rf src/
 EOT
 
-FROM plone/server-prod-config:${PLONE_VERSION}
+FROM plone/server-prod-config:${PLONE_VERSION:-{{ cookiecutter.plone_version }}}
 
 LABEL maintainer="{{ cookiecutter.author }} <{{ cookiecutter.email }}>" \
       org.label-schema.name="{{ cookiecutter.project_slug }}-backend" \

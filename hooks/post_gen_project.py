@@ -1,4 +1,5 @@
 """Post generation hook."""
+
 import json
 import os
 import subprocess

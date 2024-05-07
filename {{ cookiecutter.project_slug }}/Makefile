@@ -10,6 +10,9 @@ MAKEFLAGS+=--no-builtin-rules
 
 CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+PLONE_VERSION=$$(cat backend/version.txt)
+VOLTO_VERSION = $(shell cat ./frontend/package.json | python -c "import sys, json; print(json.load(sys.stdin)['dependencies']['@plone/volto'])")
+
 PROJECT_NAME={{ cookiecutter.project_slug }}
 STACK_NAME={{ cookiecutter.__devops_stack_name }}
 
@@ -149,9 +152,9 @@ stack-rm:  ## Local Stack: Remove Services and Volumes
 .PHONY: build-acceptance-servers
 build-acceptance-servers: ## Build Acceptance Servers
 	@echo "Build acceptance backend"
-	@docker build backend -t {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:acceptance -f backend/Dockerfile.acceptance
+	@docker build backend --build-arg PLONE_VERSION=${PLONE_VERSION} -t {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:acceptance -f backend/Dockerfile.acceptance
 	@echo "Build acceptance frontend"
-	@docker build frontend -t {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:acceptance -f frontend/Dockerfile
+	@docker build frontend --build-arg VOLTO_VERSION=${VOLTO_VERSION} -t {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-frontend:acceptance -f frontend/Dockerfile
 
 .PHONY: start-acceptance-servers
 start-acceptance-servers: build-acceptance-servers ## Start Acceptance Servers
@@ -172,3 +175,24 @@ run-acceptance-tests: ## Run Acceptance tests
 	npx wait-on --httpTimeout 20000 http-get://localhost:55001/plone http://localhost:3000
 	$(MAKE) -C "./frontend/" test-acceptance-headless
 	$(MAKE) stop-acceptance-servers
+
+## Acceptance Frontend tests in development mode
+.PHONY: start-test-acceptance-frontend-dev
+start-test-acceptance-frontend-dev: ## Start the Acceptance Frontend Fixture in development mode
+	(cd frontend && RAZZLE_API_PATH=http://127.0.0.1:55001/plone yarn start)
+
+.PHONY: start-test-acceptance-server
+start-test-acceptance-server: build-acceptance-servers ## Start Backend Acceptance Servers in development mode
+	@echo "Starting test acceptance server"
+	@docker run --rm -p 55001:55001 --name {{ cookiecutter.project_slug }}-backend-acceptance -d {{ cookiecutter.github_organization }}/{{ cookiecutter.project_slug }}-backend:acceptance
+	@echo "Started test acceptance server"
+
+.PHONY: test-acceptance
+test-acceptance: ## Start Cypress (for use it while developing)
+	(cd frontend && ./node_modules/.bin/cypress open')
+
+.PHONY: stop-acceptance-server
+stop-acceptance-server: ## Stop Backend Acceptance Server in development mode
+	@echo "Stopping acceptance server"
+	@docker stop {{ cookiecutter.project_slug }}-backend-acceptance
+	@echo "Stopped acceptance server"
