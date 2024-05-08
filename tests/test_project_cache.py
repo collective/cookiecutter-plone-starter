@@ -3,8 +3,9 @@
 import pytest
 
 CACHE_FILES = [
-    "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.cachepurging.interfaces.ICachePurgingSettings.xml",
-    "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.caching.interfaces.ICacheSettings.xml",
+    "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.base.interfaces.controlpanel.IMailSchema.xml",
+    "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.base.interfaces.controlpanel.ISiteSchema.xml",
+    "backend/src/ploneorgbr/src/ploneorgbr/profiles/default/registry/plone.i18n.interfaces.ILanguageSchema.xml",
     "devops/varnish/Dockerfile",
     "devops/varnish/etc/varnish.vcl",
 ]
