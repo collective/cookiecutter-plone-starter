@@ -56,7 +56,7 @@ setup(
             "pytest-plone>=0.2.0",
             "pytest-cov",
             "pytest",
-            "gocept.pytestlayer",
+            "zope.pytestlayer",
           {%- endif %}
           {%- if cookiecutter.python_test_framework != 'pytest' %}
             "parameterized",
