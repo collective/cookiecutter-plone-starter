@@ -53,7 +53,7 @@ setup(
     extras_require={
         "test": [
           {%- if cookiecutter.python_test_framework == 'pytest' %}
-            "pytest-plone>=0.2.0",
+            "pytest-plone>=0.5.0",
             "pytest-cov",
             "pytest",
             "zope.pytestlayer",
@@ -62,7 +62,7 @@ setup(
             "parameterized",
           {%- endif %}
             "zest.releaser[recommended]",
-            "plone.app.testing[robot]>=7.0.0a3",
+            "plone.app.testing[robot]",
             "plone.restapi[test]",
             "collective.MockMailHost",
         ],
