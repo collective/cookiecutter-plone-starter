@@ -92,7 +92,12 @@ bin/pip:
 .PHONY: config
 config: bin/pip  ## Create instance configuration
 	@echo "$(GREEN)==> Create instance configuration$(RESET)"
-	bin/cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
+	if [[ -s instance-override.yaml ]]; then \
+				echo "    Using instance-local.yaml"; \
+				bin/cookiecutter -f --no-input --config-file instance-local.yaml gh:plone/cookiecutter-zope-instance ;\
+	else \
+				bin/cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance ;\
+	fi
 
 # i18n
 bin/i18ndude: bin/pip

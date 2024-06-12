@@ -41,3 +41,4 @@ live.cfg
 inituser
 pip-wheel-metadata
 pyvenv.cfg
+instance-local.yaml
