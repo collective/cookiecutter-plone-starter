@@ -1,5 +1,10 @@
 # Cookiecutter Plone Starter 🌟
 
+> [!CAUTION]
+> 
+> This method to create and install a Plone project is now deprecated.
+> See [Install Plone](https://6.docs.plone.org/install/index.html#install-plone) for current options.
+
 [![Cookiecutter Plone Project CI](https://github.com/collective/cookiecutter-plone-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/collective/cookiecutter-plone-starter/actions/workflows/ci.yml)
 [![Built with Cookiecutter](https://img.shields.io/badge/built%20with-Cookiecutter-ff69b4.svg?logo=cookiecutter)](https://github.com/collective/cookiecutter-plone-starter/)
 ![GitHub](https://img.shields.io/github/license/collective/cookiecutter-plone-starter)
